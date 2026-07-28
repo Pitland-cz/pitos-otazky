@@ -1,0 +1,172 @@
+<!DOCTYPE html><html lang="cs"><head><meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover">
+<meta name="theme-color" content="#0f1216"><meta name="apple-mobile-web-app-capable" content="yes">
+<meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
+<title>PitOS — otázky (F0)</title><style>
+:root{--bg:#0f1216;--card:#171c23;--line:#2a333f;--tx:#e8ecf1;--mut:#93a1b3;--acc:#ff4d2e;--ok:#3ddc84}
+*{box-sizing:border-box}html{-webkit-text-size-adjust:100%}
+body{margin:0;background:var(--bg);color:var(--tx);font:16px/1.5 -apple-system,'Segoe UI',Roboto,sans-serif;padding-bottom:90px}
+header{position:sticky;top:0;z-index:5;background:rgba(15,18,22,.96);backdrop-filter:blur(8px);border-bottom:1px solid var(--line);padding:14px 16px calc(10px + env(safe-area-inset-top) * 0)}
+h1{font-size:18px;margin:0}h1 span{color:var(--acc)}
+#prog{font-size:13px;color:var(--mut);margin-top:3px}
+main{max-width:640px;margin:0 auto;padding:14px}
+.q{background:var(--card);border:1px solid var(--line);border-radius:14px;padding:14px;margin-bottom:14px}
+.q.done{border-color:var(--ok)}
+.qh{display:flex;gap:8px;align-items:center;margin-bottom:6px;flex-wrap:wrap}
+.qid{background:var(--acc);color:#fff;font-weight:700;border-radius:7px;padding:2px 9px;font-size:14px}
+.sc{color:var(--mut);font-size:12.5px}
+.q p{margin:0 0 10px;font-size:15px;color:#c9d3de}
+.tw{display:flex;gap:8px;align-items:flex-end}
+textarea{flex:1;background:#0f141a;color:var(--tx);border:1px solid var(--line);border-radius:10px;padding:10px 12px;font:16px/1.45 inherit;resize:vertical;min-height:64px}
+textarea:focus{outline:none;border-color:var(--acc)}
+.mic{background:#222b35;color:#fff;border:1px solid var(--line);border-radius:12px;width:52px;height:52px;font-size:22px;cursor:pointer;flex:none}
+.mic.rec{background:var(--acc);animation:pl 1s infinite}
+@keyframes pl{50%{opacity:.5}}
+.bar{position:fixed;left:0;right:0;bottom:0;background:rgba(15,18,22,.97);border-top:1px solid var(--line);padding:12px 16px calc(12px + env(safe-area-inset-bottom));display:flex;gap:10px;justify-content:center}
+.bar button{flex:1;max-width:300px;background:var(--acc);color:#fff;border:0;border-radius:12px;padding:14px;font-size:16px;font-weight:700;cursor:pointer}
+.bar button.sec{background:#222b35}
+.note{background:#151b13;border:1px solid #2c4022;border-radius:12px;padding:10px 14px;font-size:13.5px;color:#b7c9ad;margin-bottom:14px}
+</style></head><body>
+<header><h1>Pit<span>OS</span> · otevřené otázky (20)</h1><div id="prog"></div></header>
+<main>
+<div class="note">Odpovědi se <b>samy ukládají</b> v prohlížeči — můžeš kdykoli odejít a vrátit se. Diktuj přes 🎤 (nebo mikrofonem na klávesnici). Nevíš-li, nech prázdné. Nakonec dole <b>Odeslat</b> → pošli mi výsledek do chatu.</div>
+<div class="q" data-q="Q3b">
+<div class="qh"><span class="qid">Q3b</span><span class="sc">M02 — řízení rychlosti</span></div>
+<p>DeHaardt: jaký je model přístupového bodu (AP) a přijímačů na strojích? Máte kontakt/dokumentaci od DeHaardt? Umí systém adresovat jednotlivé stroje, nebo jen broadcast? (klíč k pain-pointu #1 — mapy per skupina)</p>
+<div class="tw"><textarea data-k="Q3b" rows="3" placeholder="Odpověď… (piš, nebo diktuj 🎤)"></textarea>
+<button type="button" class="mic" title="Diktovat česky">🎤</button></div></div>
+<div class="q" data-q="Q4">
+<div class="qh"><span class="qid">Q4</span><span class="sc">M09/M10 — platby</span></div>
+<p>Platební terminál: jaká banka/model? Chceme ho v PitOS integrovat (částka poletí do terminálu automaticky)? A jaká platební brána běží na webu pitland.cz?</p>
+<div class="tw"><textarea data-k="Q4" rows="3" placeholder="Odpověď… (piš, nebo diktuj 🎤)"></textarea>
+<button type="button" class="mic" title="Diktovat česky">🎤</button></div></div>
+<div class="q" data-q="Q2">
+<div class="qh"><span class="qid">Q2</span><span class="sc">M01</span></div>
+<p>Kde jsou transpondéry na motorkách umístěné (výška, strana, rušení)? Aktivní s baterií — režim výměny/nabíjení baterií?</p>
+<div class="tw"><textarea data-k="Q2" rows="3" placeholder="Odpověď… (piš, nebo diktuj 🎤)"></textarea>
+<button type="button" class="mic" title="Diktovat česky">🎤</button></div></div>
+<div class="q" data-q="Q5">
+<div class="qh"><span class="qid">Q5</span><span class="sc">M10</span></div>
+<p>Jaký účetní SW používá účetní (Pohoda / Money / ABRA / jiný)?</p>
+<div class="tw"><textarea data-k="Q5" rows="3" placeholder="Odpověď… (piš, nebo diktuj 🎤)"></textarea>
+<button type="button" class="mic" title="Diktovat česky">🎤</button></div></div>
+<div class="q" data-q="Q6">
+<div class="qh"><span class="qid">Q6</span><span class="sc">rozsah všech fází</span></div>
+<p>Které funkce Apexu se v Pitlandu reálně používají a které ne (vrstva „Jak používáme“)? Co nejvíc bolí (vrstva „Co nás tlačí“)?</p>
+<div class="tw"><textarea data-k="Q6" rows="3" placeholder="Odpověď… (piš, nebo diktuj 🎤)"></textarea>
+<button type="button" class="mic" title="Diktovat česky">🎤</button></div></div>
+<div class="q" data-q="Q7">
+<div class="qh"><span class="qid">Q7</span><span class="sc">M15</span></div>
+<p>Jezdí Pitland SWS nebo jinou externí sérii vyžadující export výsledků? Jaké formáty eventů se reálně pořádají?</p>
+<div class="tw"><textarea data-k="Q7" rows="3" placeholder="Odpověď… (piš, nebo diktuj 🎤)"></textarea>
+<button type="button" class="mic" title="Diktovat česky">🎤</button></div></div>
+<div class="q" data-q="Q8">
+<div class="qh"><span class="qid">Q8</span><span class="sc">GateAdapter</span></div>
+<p>Turnikety a řízení vstupu — používají se dnes? Mají zůstat?</p>
+<div class="tw"><textarea data-k="Q8" rows="3" placeholder="Odpověď… (piš, nebo diktuj 🎤)"></textarea>
+<button type="button" class="mic" title="Diktovat česky">🎤</button></div></div>
+<div class="q" data-q="Q9">
+<div class="qh"><span class="qid">Q9</span><span class="sc">migrace F2</span></div>
+<p>Jak lze exportovat data z Apexu (členové, kredity, historie jízd) — jen UI exporty, nebo je přístup k DB?</p>
+<div class="tw"><textarea data-k="Q9" rows="3" placeholder="Odpověď… (piš, nebo diktuj 🎤)"></textarea>
+<button type="button" class="mic" title="Diktovat česky">🎤</button></div></div>
+<div class="q" data-q="Q10">
+<div class="qh"><span class="qid">Q10</span><span class="sc">M05</span></div>
+<p>Právní rámec waiverů pro moto provoz (pojišťovna, náležitosti el. podpisu) — převzít texty, nebo revize právníkem?</p>
+<div class="tw"><textarea data-k="Q10" rows="3" placeholder="Odpověď… (piš, nebo diktuj 🎤)"></textarea>
+<button type="button" class="mic" title="Diktovat česky">🎤</button></div></div>
+<div class="q" data-q="Q11">
+<div class="qh"><span class="qid">Q11</span><span class="sc">AD-8, M05, M07, M10</span></div>
+<p>Multi-site politiky sdílení: platí členství, kredity, peněženky a vouchery napříč pobočkami? Jednotný ceník, nebo lokální ceny? Jedna právnická osoba, nebo víc (odděleně doklady a DPH)?</p>
+<div class="tw"><textarea data-k="Q11" rows="3" placeholder="Odpověď… (piš, nebo diktuj 🎤)"></textarea>
+<button type="button" class="mic" title="Diktovat česky">🎤</button></div></div>
+<div class="q" data-q="Q12">
+<div class="qh"><span class="qid">Q12</span><span class="sc">roadmapa</span></div>
+<p>Kdy reálně přibude druhá pobočka? (Určuje, jestli hub stavět hned v F1, nebo jen připravit schéma a hub dodat později.)</p>
+<div class="tw"><textarea data-k="Q12" rows="3" placeholder="Odpověď… (piš, nebo diktuj 🎤)"></textarea>
+<button type="button" class="mic" title="Diktovat česky">🎤</button></div></div>
+<div class="q" data-q="Q13">
+<div class="qh"><span class="qid">Q13</span><span class="sc">M07, M08, M13 — zásadní pro architekturu</span></div>
+<p>Vlastní web pitland.cz (admin: rezervace, e-shop, vouchery, marketing atribuce; git build) — kdo ho vyvíjí, jaký stack, kde běží, má API? Stane se cloud vrstvou PitOS, nebo ho PitOS nahradí? Dnes web→Apex ručně.</p>
+<div class="tw"><textarea data-k="Q13" rows="3" placeholder="Odpověď… (piš, nebo diktuj 🎤)"></textarea>
+<button type="button" class="mic" title="Diktovat česky">🎤</button></div></div>
+<div class="q" data-q="Q14">
+<div class="qh"><span class="qid">Q14</span><span class="sc">M05 — datový model peněženky</span></div>
+<p>Záporné zůstatky kreditů u členů (např. −70 177 C u aktivního jezdce) — co znamenají? Dluh/přečerpání, nebo účetní konvence? Ovlivňuje návrh ledgeru (povolit debet?).</p>
+<div class="tw"><textarea data-k="Q14" rows="3" placeholder="Odpověď… (piš, nebo diktuj 🎤)"></textarea>
+<button type="button" class="mic" title="Diktovat česky">🎤</button></div></div>
+<div class="q" data-q="Q15">
+<div class="qh"><span class="qid">Q15</span><span class="sc">provozní spolehlivost F1</span></div>
+<p>Ruční startovací procedura stanice (1. USB Server → 2. Chrome → 3. GoKarts) — PitOS cíl: vše jako služby s autostartem a watchdogem. Jsou i jiné ruční kroky při otevírání/zavírání dne?</p>
+<div class="tw"><textarea data-k="Q15" rows="3" placeholder="Odpověď… (piš, nebo diktuj 🎤)"></textarea>
+<button type="button" class="mic" title="Diktovat česky">🎤</button></div></div>
+<div class="q" data-q="Q16">
+<div class="qh"><span class="qid">Q16</span><span class="sc">M09</span></div>
+<p>Pokladní uzávěrka — co přesně provádí a kontroluje (Z-report, korekce plateb, hotovost v zásuvce)? Neproběhlo živě (ostrá operace).</p>
+<div class="tw"><textarea data-k="Q16" rows="3" placeholder="Odpověď… (piš, nebo diktuj 🎤)"></textarea>
+<button type="button" class="mic" title="Diktovat česky">🎤</button></div></div>
+<div class="q" data-q="Q17">
+<div class="qh"><span class="qid">Q17</span><span class="sc">M05/M09 — ledger</span></div>
+<p>Ruční úpravy kreditů („Pole Kredity bylo upraveno ručně 13000 → 10900&quot;, LUCIE na serveru) — jaký proces to nahrazuje? Souvisí se zápornými zůstatky (Q14)?</p>
+<div class="tw"><textarea data-k="Q17" rows="3" placeholder="Odpověď… (piš, nebo diktuj 🎤)"></textarea>
+<button type="button" class="mic" title="Diktovat česky">🎤</button></div></div>
+<div class="q" data-q="Q18">
+<div class="qh"><span class="qid">Q18</span><span class="sc">M07</span></div>
+<p>Vouchery „Rozbal TO!&quot; — jak probíhá uplatnění (ruční přepis kódu?) a párování s portálem rozbal.to? Kandidát na API integraci v PitOS.</p>
+<div class="tw"><textarea data-k="Q18" rows="3" placeholder="Odpověď… (piš, nebo diktuj 🎤)"></textarea>
+<button type="button" class="mic" title="Diktovat česky">🎤</button></div></div>
+<div class="q" data-q="Q19">
+<div class="qh"><span class="qid">Q19</span><span class="sc">M01/M02/M04 — F4+</span></div>
+<p>UWB RTLS (Sewio) a/nebo vlastní CAN tag na ePitech — business case, cena instalace (kotvy, tagy), pilot? Souvisí s Q3b (plán B pro adresné řízení rychlosti).</p>
+<div class="tw"><textarea data-k="Q19" rows="3" placeholder="Odpověď… (piš, nebo diktuj 🎤)"></textarea>
+<button type="button" class="mic" title="Diktovat česky">🎤</button></div></div>
+<div class="q" data-q="Q20">
+<div class="qh"><span class="qid">Q20</span><span class="sc">M05/M09/M10 — daňový poradce, F0.5</span></div>
+<p>DPH režim kreditů a voucherů — jednoúčelový vs. víceúčelový poukaz (odvod DPH při prodeji vs. při čerpání). Jak to dělá Pitland účetně dnes? Zásadní pro návrh ledgeru a dokladů.</p>
+<div class="tw"><textarea data-k="Q20" rows="3" placeholder="Odpověď… (piš, nebo diktuj 🎤)"></textarea>
+<button type="button" class="mic" title="Diktovat česky">🎤</button></div></div>
+<div class="q" data-q="Q21">
+<div class="qh"><span class="qid">Q21</span><span class="sc">M17 — F0.5, průzkum na serveru</span></div>
+<p>Databáze Apex GoKarts — jaký engine, kde leží, lze číst schéma? Klíč k migraci M17 (jinak jen exporty a sestavy).</p>
+<div class="tw"><textarea data-k="Q21" rows="3" placeholder="Odpověď… (piš, nebo diktuj 🎤)"></textarea>
+<button type="button" class="mic" title="Diktovat česky">🎤</button></div></div>
+</main>
+<div class="bar"><button class="sec" onclick="dl()">⬇️ JSON</button><button onclick="share()">📤 Odeslat / sdílet</button></div>
+<script>
+const KEY='pitos_otazky_v1';let data={};
+try{data=JSON.parse(localStorage.getItem(KEY)||'{}')}catch(e){}
+const tas=[...document.querySelectorAll('textarea')];
+tas.forEach(t=>{const k=t.dataset.k;if(data[k])t.value=data[k];fit(t);mark(t);
+ t.addEventListener('input',()=>{data[k]=t.value;localStorage.setItem(KEY,JSON.stringify(data));fit(t);mark(t);prog();});});
+function fit(t){t.style.height='auto';t.style.height=Math.max(64,t.scrollHeight)+'px'}
+function mark(t){t.closest('.q').classList.toggle('done',t.value.trim()!=='')}
+function prog(){const d=tas.filter(t=>t.value.trim()!=='').length;
+ document.getElementById('prog').textContent=d+' / '+tas.length+' zodpovězeno';}
+prog();
+function collect(){const out={exportedAt:new Date().toISOString(),odpovedi:{}};
+ tas.forEach(t=>{if(t.value.trim())out.odpovedi[t.dataset.k]={otazka:t.closest('.q').querySelector('p').textContent,odpoved:t.value.trim()}});
+ return JSON.stringify(out,null,2);}
+async function share(){const j=collect();
+ if(navigator.share){try{await navigator.share({title:'PitOS odpovědi',text:j});return}catch(e){}}
+ try{await navigator.clipboard.writeText(j);alert('Zkopírováno do schránky — vlož mi to do chatu.')}catch(e){dl()}}
+function dl(){const b=new Blob([collect()],{type:'application/json'});
+ const a=document.createElement('a');a.href=URL.createObjectURL(b);a.download='pitos_odpovedi.json';a.click();}
+// Diktování
+(function(){const SR=window.SpeechRecognition||window.webkitSpeechRecognition;
+ const mics=document.querySelectorAll('.mic');
+ if(!SR){mics.forEach(b=>{b.style.opacity=.35;b.title='Použij mikrofon na klávesnici'});return}
+ let rec=null,act=null;
+ mics.forEach(btn=>btn.addEventListener('click',()=>{
+  if(act===btn){try{rec.stop()}catch(e){};return}
+  if(rec){try{rec.stop()}catch(e){}}
+  const ta=btn.closest('.tw').querySelector('textarea');
+  rec=new SR();rec.lang='cs-CZ';rec.continuous=true;rec.interimResults=true;
+  act=btn;btn.classList.add('rec');btn.textContent='⏹';
+  let base=ta.value?ta.value.replace(/\s+$/,'')+' ':'';
+  rec.onresult=e=>{let f='',i='';for(let r of e.results){if(r.isFinal)f+=r[0].transcript;else i+=r[0].transcript}
+   ta.value=(base+f+i).replace(/ {2,}/g,' ');ta.dispatchEvent(new Event('input'));};
+  rec.onend=()=>{btn.classList.remove('rec');btn.textContent='🎤';act=null;rec=null;};
+  rec.onerror=rec.onend;
+  try{rec.start()}catch(e){rec.onend()}
+ }));})();
+</script></body></html>
