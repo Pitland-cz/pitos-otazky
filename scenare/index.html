@@ -1,0 +1,347 @@
+<!DOCTYPE html><html lang="cs"><head><meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover">
+<meta name="theme-color" content="#0f1216"><title>PitOS — scénáře & pre-mortem</title><style>
+:root{--bg:#0f1216;--card:#171c23;--line:#2a333f;--tx:#e8ecf1;--mut:#93a1b3;--acc:#ff4d2e;--ok:#3ddc84}
+*{box-sizing:border-box}body{margin:0;background:var(--bg);color:var(--tx);font:15.5px/1.5 -apple-system,'Segoe UI',Roboto,sans-serif;padding-bottom:90px}
+header{position:sticky;top:0;z-index:5;background:rgba(15,18,22,.97);border-bottom:1px solid var(--line);padding:12px 16px}
+h1{font-size:18px;margin:0 0 8px}h1 span{color:var(--acc)}
+.tabs{display:flex;gap:8px}.tabs button{flex:1;background:#1e252e;color:var(--mut);border:1px solid var(--line);border-radius:9px;padding:9px;font-size:14px;font-weight:700;cursor:pointer}
+.tabs button.on{background:var(--acc);border-color:var(--acc);color:#fff}
+#prog{font-size:12.5px;color:var(--mut);margin-top:6px}
+main{max-width:680px;margin:0 auto;padding:14px}
+.grp{font-size:15px;color:var(--acc);margin:20px 2px 10px;text-transform:uppercase;letter-spacing:.5px}
+.q{background:var(--card);border:1px solid var(--line);border-radius:13px;padding:13px;margin-bottom:12px}
+.q.done{border-color:var(--ok)}
+.qh{display:flex;gap:9px;align-items:center;margin-bottom:5px;flex-wrap:wrap}
+.qid{background:var(--acc);color:#fff;font-weight:800;border-radius:6px;padding:1px 8px;font-size:13px}
+.qid.pm{background:#7048b6}
+.cat{color:var(--mut);font-size:12.5px}
+.q p{margin:0 0 10px;font-size:14px;color:#c9d3de}
+.row{display:flex;gap:8px;flex-wrap:wrap}
+select{background:#0f141a;color:var(--tx);border:1px solid var(--line);border-radius:9px;padding:9px 10px;font-size:14px;min-width:150px}
+.tw{display:flex;gap:6px;flex:1;min-width:220px}
+input{flex:1;background:#0f141a;color:var(--tx);border:1px solid var(--line);border-radius:9px;padding:9px 11px;font:15px inherit}
+input:focus,select:focus{outline:none;border-color:var(--acc)}
+.mic{background:#222b35;color:#fff;border:1px solid var(--line);border-radius:9px;width:42px;font-size:17px;cursor:pointer;flex:none}
+.mic.rec{background:var(--acc);animation:pl 1s infinite}@keyframes pl{50%{opacity:.5}}
+.bar{position:fixed;left:0;right:0;bottom:0;background:rgba(15,18,22,.97);border-top:1px solid var(--line);padding:11px 16px calc(11px + env(safe-area-inset-bottom));display:flex;gap:10px;justify-content:center}
+.bar button{flex:1;max-width:280px;background:var(--acc);color:#fff;border:0;border-radius:11px;padding:13px;font-size:15px;font-weight:800;cursor:pointer}
+.bar button.sec{background:#333d49}
+.note{background:#151b13;border:1px solid #2c4022;border-radius:11px;padding:9px 13px;font-size:13px;color:#b7c9ad;margin-bottom:8px}
+section{display:none}section.on{display:block}
+</style></head><body>
+<header><h1>Pit<span>OS</span> · scénáře chování & pre-mortem</h1>
+<div class="tabs"><button id="tb1" class="on" onclick="tab(1)">🎬 Scénáře (45)</button><button id="tb2" onclick="tab(2)">💀 Pre-mortem (16+5)</button></div>
+<div id="prog"></div></header>
+<main>
+<section id="s1" class="on">
+<div class="note"><b>Scénáře:</b> „takhle se má systém zachovat.“ U každého potvrď ✅, uprav ✏️ (a napiš/nadiktuj jak), nebo vyhoď ❌. Odsouhlasené scénáře se stanou akceptačními testy ve smlouvě s dodavatelem.</div>
+<h2 class="grp">A. Časomíra a měření</h2>
+<div class="q"><div class="qh"><span class="qid">S01</span><b>Průjezd stroje mimo běžící jízdu</b></div>
+<p>Průjezd se trvale uloží jako „skrytý“ a lze ho později přiřadit (stroj testuje mechanik, jezdec vyjel dřív…). Nikdy se nezahazuje.</p>
+<div class="row"><select data-k="S01_v"><option value=""></option><option>✅ souhlasí</option><option>✏️ upravit (poznámka)</option><option>❌ vypustit</option><option>❓ probrat</option></select>
+<div class="tw"><input data-k="S01_n" placeholder="poznámka / jak upravit (🎤 diktuj)"><button type="button" class="mic">🎤</button></div></div></div>
+<div class="q"><div class="qh"><span class="qid">S02</span><b>Dvojité čtení transpondéru do ~100 ms</b></div>
+<p>Druhé čtení se automaticky zamítne, přednost má čtení s více úhozy; obě zůstávají v záznamu s důvodem zamítnutí.</p>
+<div class="row"><select data-k="S02_v"><option value=""></option><option>✅ souhlasí</option><option>✏️ upravit (poznámka)</option><option>❌ vypustit</option><option>❓ probrat</option></select>
+<div class="tw"><input data-k="S02_n" placeholder="poznámka / jak upravit (🎤 diktuj)"><button type="button" class="mic">🎤</button></div></div></div>
+<div class="q"><div class="qh"><span class="qid">S03</span><b>Kolo rychlejší než minimum tratě (dnes 20 s)</b></div>
+<p>Kolo je neplatné (zkratka tratí), průjezd zůstává; maršál ho může ručně uznat (auditované).</p>
+<div class="row"><select data-k="S03_v"><option value=""></option><option>✅ souhlasí</option><option>✏️ upravit (poznámka)</option><option>❌ vypustit</option><option>❓ probrat</option></select>
+<div class="tw"><input data-k="S03_n" placeholder="poznámka / jak upravit (🎤 diktuj)"><button type="button" class="mic">🎤</button></div></div></div>
+<div class="q"><div class="qh"><span class="qid">S04</span><b>První průjezd po aktivaci jízdy</b></div>
+<p>Jízda se sama odstartuje. Volitelné pravidlo: startuje jen průjezd stroje s přiřazeným jezdcem — cizí stroj na trati start nespustí.</p>
+<div class="row"><select data-k="S04_v"><option value=""></option><option>✅ souhlasí</option><option>✏️ upravit (poznámka)</option><option>❌ vypustit</option><option>❓ probrat</option></select>
+<div class="tw"><input data-k="S04_n" placeholder="poznámka / jak upravit (🎤 diktuj)"><button type="button" class="mic">🎤</button></div></div></div>
+<div class="q"><div class="qh"><span class="qid">S05</span><b>Průjezd v dojezdovém okně po cílové vlajce</b></div>
+<p>Kolo se eviduje (statistiky, osobní rekordy), ale nemění výsledkové pořadí jízdy.</p>
+<div class="row"><select data-k="S05_v"><option value=""></option><option>✅ souhlasí</option><option>✏️ upravit (poznámka)</option><option>❌ vypustit</option><option>❓ probrat</option></select>
+<div class="tw"><input data-k="S05_n" placeholder="poznámka / jak upravit (🎤 diktuj)"><button type="button" class="mic">🎤</button></div></div></div>
+<div class="q"><div class="qh"><span class="qid">S06</span><b>Jezdec zastaví na trati</b></div>
+<p>Chybí-li očekávaný průjezd (např. 2× odhadovaný čas kola), maršál dostane zvukové + vizuální upozornění s číslem stroje.</p>
+<div class="row"><select data-k="S06_v"><option value=""></option><option>✅ souhlasí</option><option>✏️ upravit (poznámka)</option><option>❌ vypustit</option><option>❓ probrat</option></select>
+<div class="tw"><input data-k="S06_n" placeholder="poznámka / jak upravit (🎤 diktuj)"><button type="button" class="mic">🎤</button></div></div></div>
+<div class="q"><div class="qh"><span class="qid">S07</span><b>Výměna transpondéru na stroji</b></div>
+<p>Nové přiřazení platí od času výměny; historické výsledky zůstávají u původního záznamu — nic se nepřepisuje.</p>
+<div class="row"><select data-k="S07_v"><option value=""></option><option>✅ souhlasí</option><option>✏️ upravit (poznámka)</option><option>❌ vypustit</option><option>❓ probrat</option></select>
+<div class="tw"><input data-k="S07_n" placeholder="poznámka / jak upravit (🎤 diktuj)"><button type="button" class="mic">🎤</button></div></div></div>
+<div class="q"><div class="qh"><span class="qid">S08</span><b>Slabá baterie transpondéru</b></div>
+<p>Varování u stroje ve všech pohledech (maršál, flotila) + zápis do servisního deníku stroje.</p>
+<div class="row"><select data-k="S08_v"><option value=""></option><option>✅ souhlasí</option><option>✏️ upravit (poznámka)</option><option>❌ vypustit</option><option>❓ probrat</option></select>
+<div class="tw"><input data-k="S08_n" placeholder="poznámka / jak upravit (🎤 diktuj)"><button type="button" class="mic">🎤</button></div></div></div>
+<div class="q"><div class="qh"><span class="qid">S09</span><b>Ruční vložení chybějícího průjezdu</b></div>
+<p>Maršál doplní průjezd (čas odhadem mezi sousedními), kola i pořadí se přepočtou, akce je auditovaná (kdo/kdy/proč).</p>
+<div class="row"><select data-k="S09_v"><option value=""></option><option>✅ souhlasí</option><option>✏️ upravit (poznámka)</option><option>❌ vypustit</option><option>❓ probrat</option></select>
+<div class="tw"><input data-k="S09_n" placeholder="poznámka / jak upravit (🎤 diktuj)"><button type="button" class="mic">🎤</button></div></div></div>
+<div class="q"><div class="qh"><span class="qid">S10</span><b>Restart časomíry uprostřed jízdy</b></div>
+<p>Po restartu (&lt; 10 s) se stav obnoví ze žurnálu a z bufferu dekodéru se dočtou zameškané průjezdy — v datech není díra.</p>
+<div class="row"><select data-k="S10_v"><option value=""></option><option>✅ souhlasí</option><option>✏️ upravit (poznámka)</option><option>❌ vypustit</option><option>❓ probrat</option></select>
+<div class="tw"><input data-k="S10_n" placeholder="poznámka / jak upravit (🎤 diktuj)"><button type="button" class="mic">🎤</button></div></div></div>
+<h2 class="grp">B. Rychlost a bezpečnost</h2>
+<div class="q"><div class="qh"><span class="qid">S11</span><b>Stisk SAFETY</b></div>
+<p>Všechny stroje zpomalí do 2 s; u každého stroje vidí maršál potvrzení povelu; nepotvrzený stroj je červeně zvýrazněný.</p>
+<div class="row"><select data-k="S11_v"><option value=""></option><option>✅ souhlasí</option><option>✏️ upravit (poznámka)</option><option>❌ vypustit</option><option>❓ probrat</option></select>
+<div class="tw"><input data-k="S11_n" placeholder="poznámka / jak upravit (🎤 diktuj)"><button type="button" class="mic">🎤</button></div></div></div>
+<div class="q"><div class="qh"><span class="qid">S12</span><b>Stisk STOP</b></div>
+<p>Všechny stroje se zastaví; obnovení jízdy vyžaduje vědomou akci maršála (ne samo od sebe).</p>
+<div class="row"><select data-k="S12_v"><option value=""></option><option>✅ souhlasí</option><option>✏️ upravit (poznámka)</option><option>❌ vypustit</option><option>❓ probrat</option></select>
+<div class="tw"><input data-k="S12_n" placeholder="poznámka / jak upravit (🎤 diktuj)"><button type="button" class="mic">🎤</button></div></div></div>
+<div class="q"><div class="qh"><span class="qid">S13</span><b>Změna rychlosti jedné skupiny</b></div>
+<p>Skupina „děti“ dostane SPD2, ostatní stroje na trati zůstávají beze změny — adresný povel, ne broadcast.</p>
+<div class="row"><select data-k="S13_v"><option value=""></option><option>✅ souhlasí</option><option>✏️ upravit (poznámka)</option><option>❌ vypustit</option><option>❓ probrat</option></select>
+<div class="tw"><input data-k="S13_n" placeholder="poznámka / jak upravit (🎤 diktuj)"><button type="button" class="mic">🎤</button></div></div></div>
+<div class="q"><div class="qh"><span class="qid">S14</span><b>Jízda s variantou tratě Left</b></div>
+<p>Aktivace jízdy automaticky nastaví strojům v jízdě profil/mapu příslušné varianty; návrat u další jízdy dle jejího nastavení.</p>
+<div class="row"><select data-k="S14_v"><option value=""></option><option>✅ souhlasí</option><option>✏️ upravit (poznámka)</option><option>❌ vypustit</option><option>❓ probrat</option></select>
+<div class="tw"><input data-k="S14_n" placeholder="poznámka / jak upravit (🎤 diktuj)"><button type="button" class="mic">🎤</button></div></div></div>
+<div class="q"><div class="qh"><span class="qid">S15</span><b>Ztráta spojení s de Haardt systémem</b></div>
+<p>Okamžitý alarm maršálovi; stroje nesmí samovolně zrychlit; bez funkční SAFETY nelze aktivovat další jízdu.</p>
+<div class="row"><select data-k="S15_v"><option value=""></option><option>✅ souhlasí</option><option>✏️ upravit (poznámka)</option><option>❌ vypustit</option><option>❓ probrat</option></select>
+<div class="tw"><input data-k="S15_n" placeholder="poznámka / jak upravit (🎤 diktuj)"><button type="button" class="mic">🎤</button></div></div></div>
+<div class="q"><div class="qh"><span class="qid">S16</span><b>Nový stroj ve flotile</b></div>
+<p>Před prvním nasazením musí projít testem povelů (změna rychlosti + stop) — jinak ho systém nepustí do jízdy.</p>
+<div class="row"><select data-k="S16_v"><option value=""></option><option>✅ souhlasí</option><option>✏️ upravit (poznámka)</option><option>❌ vypustit</option><option>❓ probrat</option></select>
+<div class="tw"><input data-k="S16_n" placeholder="poznámka / jak upravit (🎤 diktuj)"><button type="button" class="mic">🎤</button></div></div></div>
+<div class="q"><div class="qh"><span class="qid">S17</span><b>Povel stroji mimo trať / vypnutému</b></div>
+<p>Systém povel bezpečně odbaví (timeout, log), nezablokuje se a hlásí nepotvrzení.</p>
+<div class="row"><select data-k="S17_v"><option value=""></option><option>✅ souhlasí</option><option>✏️ upravit (poznámka)</option><option>❌ vypustit</option><option>❓ probrat</option></select>
+<div class="tw"><input data-k="S17_n" placeholder="poznámka / jak upravit (🎤 diktuj)"><button type="button" class="mic">🎤</button></div></div></div>
+<h2 class="grp">C. Provoz u maršála</h2>
+<div class="q"><div class="qh"><span class="qid">S18</span><b>Jezdec přijde pozdě do běžící jízdy</b></div>
+<p>Lze ho přidat za běhu; kola se mu počítají od jeho prvního průjezdu; TV ho zobrazí bez restartu jízdy.</p>
+<div class="row"><select data-k="S18_v"><option value=""></option><option>✅ souhlasí</option><option>✏️ upravit (poznámka)</option><option>❌ vypustit</option><option>❓ probrat</option></select>
+<div class="tw"><input data-k="S18_n" placeholder="poznámka / jak upravit (🎤 diktuj)"><button type="button" class="mic">🎤</button></div></div></div>
+<div class="q"><div class="qh"><span class="qid">S19</span><b>Jezdec si svévolně přesedl na jiný stroj</b></div>
+<p>Časy padají špatnému jezdci. Maršál umí zpětně přemapovat jezdec↔stroj od času X a výsledky se správně přepočtou (auditované).</p>
+<div class="row"><select data-k="S19_v"><option value=""></option><option>✅ souhlasí</option><option>✏️ upravit (poznámka)</option><option>❌ vypustit</option><option>❓ probrat</option></select>
+<div class="tw"><input data-k="S19_n" placeholder="poznámka / jak upravit (🎤 diktuj)"><button type="button" class="mic">🎤</button></div></div></div>
+<div class="q"><div class="qh"><span class="qid">S20</span><b>Porucha stroje během jízdy</b></div>
+<p>Výměna stroje jezdci za běhu se zachováním kontinuity výsledků; vadný stroj automaticky do servisní blokace.</p>
+<div class="row"><select data-k="S20_v"><option value=""></option><option>✅ souhlasí</option><option>✏️ upravit (poznámka)</option><option>❌ vypustit</option><option>❓ probrat</option></select>
+<div class="tw"><input data-k="S20_n" placeholder="poznámka / jak upravit (🎤 diktuj)"><button type="button" class="mic">🎤</button></div></div></div>
+<div class="q"><div class="qh"><span class="qid">S21</span><b>Stejná parta jede další jízdu</b></div>
+<p>Kopie jezdců do další jízdy na pár dotyků; drží se pravidlo stejných strojů.</p>
+<div class="row"><select data-k="S21_v"><option value=""></option><option>✅ souhlasí</option><option>✏️ upravit (poznámka)</option><option>❌ vypustit</option><option>❓ probrat</option></select>
+<div class="tw"><input data-k="S21_n" placeholder="poznámka / jak upravit (🎤 diktuj)"><button type="button" class="mic">🎤</button></div></div></div>
+<div class="q"><div class="qh"><span class="qid">S22</span><b>Zpoždění provozu</b></div>
+<p>Přeuspořádání/posun fronty jízd; TV „následující jízda“ ukazuje aktuální realitu, ne původní plán.</p>
+<div class="row"><select data-k="S22_v"><option value=""></option><option>✅ souhlasí</option><option>✏️ upravit (poznámka)</option><option>❌ vypustit</option><option>❓ probrat</option></select>
+<div class="tw"><input data-k="S22_n" placeholder="poznámka / jak upravit (🎤 diktuj)"><button type="button" class="mic">🎤</button></div></div></div>
+<div class="q"><div class="qh"><span class="qid">S23</span><b>Ad-hoc jízda mimo plán</b></div>
+<p>Založení nové jízdy do 30 sekund (název, délka, varianta, jezdci).</p>
+<div class="row"><select data-k="S23_v"><option value=""></option><option>✅ souhlasí</option><option>✏️ upravit (poznámka)</option><option>❌ vypustit</option><option>❓ probrat</option></select>
+<div class="tw"><input data-k="S23_n" placeholder="poznámka / jak upravit (🎤 diktuj)"><button type="button" class="mic">🎤</button></div></div></div>
+<div class="q"><div class="qh"><span class="qid">S24</span><b>Omylem smazaný jezdec z jízdy</b></div>
+<p>Akci lze vrátit (undo/obnovit), vše auditované.</p>
+<div class="row"><select data-k="S24_v"><option value=""></option><option>✅ souhlasí</option><option>✏️ upravit (poznámka)</option><option>❌ vypustit</option><option>❓ probrat</option></select>
+<div class="tw"><input data-k="S24_n" placeholder="poznámka / jak upravit (🎤 diktuj)"><button type="button" class="mic">🎤</button></div></div></div>
+<div class="q"><div class="qh"><span class="qid">S25</span><b>Penalizace jezdce</b></div>
+<p>Udělení na pár dotyků; viditelná ve výsledcích na obrazovce, na TV i na tištěné listině.</p>
+<div class="row"><select data-k="S25_v"><option value=""></option><option>✅ souhlasí</option><option>✏️ upravit (poznámka)</option><option>❌ vypustit</option><option>❓ probrat</option></select>
+<div class="tw"><input data-k="S25_n" placeholder="poznámka / jak upravit (🎤 diktuj)"><button type="button" class="mic">🎤</button></div></div></div>
+<div class="q"><div class="qh"><span class="qid">S26</span><b>Dva jezdci se stejným jménem v jízdě</b></div>
+<p>Vždy rozlišitelní (přezdívka + číslo stroje) — na maršálovi, TV i v tisku.</p>
+<div class="row"><select data-k="S26_v"><option value=""></option><option>✅ souhlasí</option><option>✏️ upravit (poznámka)</option><option>❌ vypustit</option><option>❓ probrat</option></select>
+<div class="tw"><input data-k="S26_n" placeholder="poznámka / jak upravit (🎤 diktuj)"><button type="button" class="mic">🎤</button></div></div></div>
+<h2 class="grp">D. Kiosek a CRM</h2>
+<div class="q"><div class="qh"><span class="qid">S27</span><b>Walk-in dospělý zákazník</b></div>
+<p>Registrace na kiosku do 3 minut (údaje, waiver, foto) → okamžitě nasaditelný do jízdy.</p>
+<div class="row"><select data-k="S27_v"><option value=""></option><option>✅ souhlasí</option><option>✏️ upravit (poznámka)</option><option>❌ vypustit</option><option>❓ probrat</option></select>
+<div class="tw"><input data-k="S27_n" placeholder="poznámka / jak upravit (🎤 diktuj)"><button type="button" class="mic">🎤</button></div></div></div>
+<div class="q"><div class="qh"><span class="qid">S28</span><b>Rodič s dítětem</b></div>
+<p>Rodič podepisuje waiver za dítě, vazba rodič–dítě se uloží; dítě příště samo = blokace, dokud nemá platný podpis zástupce.</p>
+<div class="row"><select data-k="S28_v"><option value=""></option><option>✅ souhlasí</option><option>✏️ upravit (poznámka)</option><option>❌ vypustit</option><option>❓ probrat</option></select>
+<div class="tw"><input data-k="S28_n" placeholder="poznámka / jak upravit (🎤 diktuj)"><button type="button" class="mic">🎤</button></div></div></div>
+<div class="q"><div class="qh"><span class="qid">S29</span><b>Jezdec bez platného waiveru v nástupu</b></div>
+<p>Maršál vidí výrazné varování a jezdce nelze nasadit; override jen se zvláštním oprávněním + audit.</p>
+<div class="row"><select data-k="S29_v"><option value=""></option><option>✅ souhlasí</option><option>✏️ upravit (poznámka)</option><option>❌ vypustit</option><option>❓ probrat</option></select>
+<div class="tw"><input data-k="S29_n" placeholder="poznámka / jak upravit (🎤 diktuj)"><button type="button" class="mic">🎤</button></div></div></div>
+<div class="q"><div class="qh"><span class="qid">S30</span><b>Změna textu waiveru</b></div>
+<p>Všechny předchozí podpisy se zneplatní; systém si vyžádá nový podpis při nejbližší návštěvě.</p>
+<div class="row"><select data-k="S30_v"><option value=""></option><option>✅ souhlasí</option><option>✏️ upravit (poznámka)</option><option>❌ vypustit</option><option>❓ probrat</option></select>
+<div class="tw"><input data-k="S30_n" placeholder="poznámka / jak upravit (🎤 diktuj)"><button type="button" class="mic">🎤</button></div></div></div>
+<div class="q"><div class="qh"><span class="qid">S31</span><b>Registrace s už existujícím e-mailem/telefonem</b></div>
+<p>Systém nabídne přihlášení/spojení s existující kartou — nevznikne duplicitní jezdec.</p>
+<div class="row"><select data-k="S31_v"><option value=""></option><option>✅ souhlasí</option><option>✏️ upravit (poznámka)</option><option>❌ vypustit</option><option>❓ probrat</option></select>
+<div class="tw"><input data-k="S31_n" placeholder="poznámka / jak upravit (🎤 diktuj)"><button type="button" class="mic">🎤</button></div></div></div>
+<div class="q"><div class="qh"><span class="qid">S32</span><b>Návštěvník odmítne pořízení fotografie</b></div>
+<p>??? K ROZHODNUTÍ: povolit registraci bez fota (s poznámkou), nebo je foto povinné? Dnes v Apexu je foto součástí.</p>
+<div class="row"><select data-k="S32_v"><option value=""></option><option>✅ souhlasí</option><option>✏️ upravit (poznámka)</option><option>❌ vypustit</option><option>❓ probrat</option></select>
+<div class="tw"><input data-k="S32_n" placeholder="poznámka / jak upravit (🎤 diktuj)"><button type="button" class="mic">🎤</button></div></div></div>
+<div class="q"><div class="qh"><span class="qid">S33</span><b>Žádost o výmaz údajů (GDPR)</b></div>
+<p>Osobní údaje se anonymizují, anonymní výsledky a statistiky zůstávají; doklad o výmazu.</p>
+<div class="row"><select data-k="S33_v"><option value=""></option><option>✅ souhlasí</option><option>✏️ upravit (poznámka)</option><option>❌ vypustit</option><option>❓ probrat</option></select>
+<div class="tw"><input data-k="S33_n" placeholder="poznámka / jak upravit (🎤 diktuj)"><button type="button" class="mic">🎤</button></div></div></div>
+<h2 class="grp">E. TV a výsledky</h2>
+<div class="q"><div class="qh"><span class="qid">S34</span><b>Start jízdy</b></div>
+<p>TV se do 2 s přepne z „následující jízdy“ na živou časomíru.</p>
+<div class="row"><select data-k="S34_v"><option value=""></option><option>✅ souhlasí</option><option>✏️ upravit (poznámka)</option><option>❌ vypustit</option><option>❓ probrat</option></select>
+<div class="tw"><input data-k="S34_n" placeholder="poznámka / jak upravit (🎤 diktuj)"><button type="button" class="mic">🎤</button></div></div></div>
+<div class="q"><div class="qh"><span class="qid">S35</span><b>Pauza mezi jízdami</b></div>
+<p>TV ukazuje následující jízdu s odpočtem a seznamem jezdec+stroj; posun fronty se ihned propíše.</p>
+<div class="row"><select data-k="S35_v"><option value=""></option><option>✅ souhlasí</option><option>✏️ upravit (poznámka)</option><option>❌ vypustit</option><option>❓ probrat</option></select>
+<div class="tw"><input data-k="S35_n" placeholder="poznámka / jak upravit (🎤 diktuj)"><button type="button" class="mic">🎤</button></div></div></div>
+<div class="q"><div class="qh"><span class="qid">S36</span><b>Konec jízdy</b></div>
+<p>Výsledky na TV po nastavenou dobu, poté automaticky další jízda; maršál může přepnout ručně.</p>
+<div class="row"><select data-k="S36_v"><option value=""></option><option>✅ souhlasí</option><option>✏️ upravit (poznámka)</option><option>❌ vypustit</option><option>❓ probrat</option></select>
+<div class="tw"><input data-k="S36_n" placeholder="poznámka / jak upravit (🎤 diktuj)"><button type="button" class="mic">🎤</button></div></div></div>
+<div class="q"><div class="qh"><span class="qid">S37</span><b>Tisk výsledkové listiny</b></div>
+<p>Ihned po dojezdu; obsahuje pořadí, všechna kola všech jezdců, průměry, osobní rekordy a žebříčky den/měsíc/rekord tratě.</p>
+<div class="row"><select data-k="S37_v"><option value=""></option><option>✅ souhlasí</option><option>✏️ upravit (poznámka)</option><option>❌ vypustit</option><option>❓ probrat</option></select>
+<div class="tw"><input data-k="S37_n" placeholder="poznámka / jak upravit (🎤 diktuj)"><button type="button" class="mic">🎤</button></div></div></div>
+<div class="q"><div class="qh"><span class="qid">S38</span><b>Výpadek/odpojení TV obrazovky</b></div>
+<p>Po zapnutí se obrazovka sama vrátí do správného režimu bez zásahu obsluhy.</p>
+<div class="row"><select data-k="S38_v"><option value=""></option><option>✅ souhlasí</option><option>✏️ upravit (poznámka)</option><option>❌ vypustit</option><option>❓ probrat</option></select>
+<div class="tw"><input data-k="S38_n" placeholder="poznámka / jak upravit (🎤 diktuj)"><button type="button" class="mic">🎤</button></div></div></div>
+<h2 class="grp">F. Odolnost a infrastruktura</h2>
+<div class="q"><div class="qh"><span class="qid">S39</span><b>Výpadek internetu na celý den</b></div>
+<p>Celý provoz na trati i registrace jedou naplno; online vrstva (live web) se po obnově sama dosynchronizuje.</p>
+<div class="row"><select data-k="S39_v"><option value=""></option><option>✅ souhlasí</option><option>✏️ upravit (poznámka)</option><option>❌ vypustit</option><option>❓ probrat</option></select>
+<div class="tw"><input data-k="S39_n" placeholder="poznámka / jak upravit (🎤 diktuj)"><button type="button" class="mic">🎤</button></div></div></div>
+<div class="q"><div class="qh"><span class="qid">S40</span><b>Výpadek centrálního serveru</b></div>
+<p>Časomíra, maršál a TV jedou dál z tratě; po obnově serveru se vše doplní bez ztráty a duplicit.</p>
+<div class="row"><select data-k="S40_v"><option value=""></option><option>✅ souhlasí</option><option>✏️ upravit (poznámka)</option><option>❌ vypustit</option><option>❓ probrat</option></select>
+<div class="tw"><input data-k="S40_n" placeholder="poznámka / jak upravit (🎤 diktuj)"><button type="button" class="mic">🎤</button></div></div></div>
+<div class="q"><div class="qh"><span class="qid">S41</span><b>Výpadek proudu celé haly uprostřed jízdy</b></div>
+<p>Po nájezdu systém jízdu korektně obnoví nebo uzavře; všechna data do okamžiku výpadku jsou zachována.</p>
+<div class="row"><select data-k="S41_v"><option value=""></option><option>✅ souhlasí</option><option>✏️ upravit (poznámka)</option><option>❌ vypustit</option><option>❓ probrat</option></select>
+<div class="tw"><input data-k="S41_n" placeholder="poznámka / jak upravit (🎤 diktuj)"><button type="button" class="mic">🎤</button></div></div></div>
+<div class="q"><div class="qh"><span class="qid">S42</span><b>Přechod letního/zimního času během provozu</b></div>
+<p>Časy kol a pořadí správně (interně UTC); zobrazovaný čas dne se jen posune.</p>
+<div class="row"><select data-k="S42_v"><option value=""></option><option>✅ souhlasí</option><option>✏️ upravit (poznámka)</option><option>❌ vypustit</option><option>❓ probrat</option></select>
+<div class="tw"><input data-k="S42_n" placeholder="poznámka / jak upravit (🎤 diktuj)"><button type="button" class="mic">🎤</button></div></div></div>
+<div class="q"><div class="qh"><span class="qid">S43</span><b>Docházející místo na disku</b></div>
+<p>Včasný alarm (dny předem), systém nikdy nespadne kvůli plnému disku bez varování.</p>
+<div class="row"><select data-k="S43_v"><option value=""></option><option>✅ souhlasí</option><option>✏️ upravit (poznámka)</option><option>❌ vypustit</option><option>❓ probrat</option></select>
+<div class="tw"><input data-k="S43_n" placeholder="poznámka / jak upravit (🎤 diktuj)"><button type="button" class="mic">🎤</button></div></div></div>
+<div class="q"><div class="qh"><span class="qid">S44</span><b>Aktualizace softwaru</b></div>
+<p>Nasazení nové verze večer mimo provoz: automatická migrace dat, možnost návratu na předchozí verzi.</p>
+<div class="row"><select data-k="S44_v"><option value=""></option><option>✅ souhlasí</option><option>✏️ upravit (poznámka)</option><option>❌ vypustit</option><option>❓ probrat</option></select>
+<div class="tw"><input data-k="S44_n" placeholder="poznámka / jak upravit (🎤 diktuj)"><button type="button" class="mic">🎤</button></div></div></div>
+<div class="q"><div class="qh"><span class="qid">S45</span><b>Paralelní běh s Apexem</b></div>
+<p>Oba systémy čtou dekodér současně, aniž si překáží (technicky ověřit v PoC — sdílení COM portu / druhý výstup!).</p>
+<div class="row"><select data-k="S45_v"><option value=""></option><option>✅ souhlasí</option><option>✏️ upravit (poznámka)</option><option>❌ vypustit</option><option>❓ probrat</option></select>
+<div class="tw"><input data-k="S45_n" placeholder="poznámka / jak upravit (🎤 diktuj)"><button type="button" class="mic">🎤</button></div></div></div>
+</section>
+<section id="s2">
+<div class="note"><b>Pre-mortem:</b> představ si, že je rok 2027 a projekt selhal. Níže jsou možné důvody — ohodnoť závažnost a napiš, jak tomu předejdeme. Dole přidej vlastní důvody, které tě napadnou (klidně ty „nepříjemné“).</div>
+<div class="q"><div class="qh"><span class="qid pm">P01</span><span class="cat">Dodavatel</span></div>
+<p>Dodavatel v půlce skončí (krach, ztráta zájmu, prioritnější zakázka) a nikdo jiný v kódu nenaváže.</p>
+<div class="row"><select data-k="P01_v"><option value="">závažnost…</option><option>🔴 kritické</option><option>🟠 vážné</option><option>🟡 menší</option><option>⚪ neřešit</option></select>
+<div class="tw"><input data-k="P01_n" placeholder="jak tomu předejdeme? (🎤 diktuj)"><button type="button" class="mic">🎤</button></div></div></div>
+<div class="q"><div class="qh"><span class="qid pm">P02</span><span class="cat">Dodavatel</span></div>
+<p>PoC dopadne skvěle, ale plná dodávka se vleče — malé kapacity dodavatele, sliby se posouvají.</p>
+<div class="row"><select data-k="P02_v"><option value="">závažnost…</option><option>🔴 kritické</option><option>🟠 vážné</option><option>🟡 menší</option><option>⚪ neřešit</option></select>
+<div class="tw"><input data-k="P02_n" placeholder="jak tomu předejdeme? (🎤 diktuj)"><button type="button" class="mic">🎤</button></div></div></div>
+<div class="q"><div class="qh"><span class="qid pm">P03</span><span class="cat">Dodavatel</span></div>
+<p>Kód je funkční, ale nedokumentovaný a neudržovatelný; po předání jsme na dodavateli závislí (lock-in člověkem).</p>
+<div class="row"><select data-k="P03_v"><option value="">závažnost…</option><option>🔴 kritické</option><option>🟠 vážné</option><option>🟡 menší</option><option>⚪ neřešit</option></select>
+<div class="tw"><input data-k="P03_n" placeholder="jak tomu předejdeme? (🎤 diktuj)"><button type="button" class="mic">🎤</button></div></div></div>
+<div class="q"><div class="qh"><span class="qid pm">P04</span><span class="cat">Technika</span></div>
+<p>Paralelní běh nikdy nedosáhne 100% shody s Apexem (jiná deduplikace, zaokrouhlení) a ztratíme důvěru výsledkům.</p>
+<div class="row"><select data-k="P04_v"><option value="">závažnost…</option><option>🔴 kritické</option><option>🟠 vážné</option><option>🟡 menší</option><option>⚪ neřešit</option></select>
+<div class="tw"><input data-k="P04_n" placeholder="jak tomu předejdeme? (🎤 diktuj)"><button type="button" class="mic">🎤</button></div></div></div>
+<div class="q"><div class="qh"><span class="qid pm">P05</span><span class="cat">Technika</span></div>
+<p>Ukáže se, že k softwarovému ovládání de Haardt je potřeba dokoupit jednotku (Track Remote/Black-Box) s dlouhou dodací lhůtou.</p>
+<div class="row"><select data-k="P05_v"><option value="">závažnost…</option><option>🔴 kritické</option><option>🟠 vážné</option><option>🟡 menší</option><option>⚪ neřešit</option></select>
+<div class="tw"><input data-k="P05_n" placeholder="jak tomu předejdeme? (🎤 diktuj)"><button type="button" class="mic">🎤</button></div></div></div>
+<div class="q"><div class="qh"><span class="qid pm">P06</span><span class="cat">Technika</span></div>
+<p>RaceResult dekodér nejde číst dvěma systémy současně → paralelní běh musí vyřešit pasivní odbočku/druhý výstup, jinak celá strategie padá.</p>
+<div class="row"><select data-k="P06_v"><option value="">závažnost…</option><option>🔴 kritické</option><option>🟠 vážné</option><option>🟡 menší</option><option>⚪ neřešit</option></select>
+<div class="tw"><input data-k="P06_n" placeholder="jak tomu předejdeme? (🎤 diktuj)"><button type="button" class="mic">🎤</button></div></div></div>
+<div class="q"><div class="qh"><span class="qid pm">P07</span><span class="cat">Technika</span></div>
+<p>Migrace kreditů nesedí (záporné zůstatky, ruční zásahy z minulosti) a zákazníci se bouří kvůli „ukradeným“ kreditům.</p>
+<div class="row"><select data-k="P07_v"><option value="">závažnost…</option><option>🔴 kritické</option><option>🟠 vážné</option><option>🟡 menší</option><option>⚪ neřešit</option></select>
+<div class="tw"><input data-k="P07_n" placeholder="jak tomu předejdeme? (🎤 diktuj)"><button type="button" class="mic">🎤</button></div></div></div>
+<div class="q"><div class="qh"><span class="qid pm">P08</span><span class="cat">Provoz</span></div>
+<p>Maršálská aplikace je v rukavicích a na slunci nepoužitelná — personál se vrátí k Apexu a PitOS umře v šuplíku.</p>
+<div class="row"><select data-k="P08_v"><option value="">závažnost…</option><option>🔴 kritické</option><option>🟠 vážné</option><option>🟡 menší</option><option>⚪ neřešit</option></select>
+<div class="tw"><input data-k="P08_n" placeholder="jak tomu předejdeme? (🎤 diktuj)"><button type="button" class="mic">🎤</button></div></div></div>
+<div class="q"><div class="qh"><span class="qid pm">P09</span><span class="cat">Provoz</span></div>
+<p>Personál není zaškolen / nechce změnu; období dvou systémů se táhne měsíce a všechny vyčerpá.</p>
+<div class="row"><select data-k="P09_v"><option value="">závažnost…</option><option>🔴 kritické</option><option>🟠 vážné</option><option>🟡 menší</option><option>⚪ neřešit</option></select>
+<div class="tw"><input data-k="P09_n" placeholder="jak tomu předejdeme? (🎤 diktuj)"><button type="button" class="mic">🎤</button></div></div></div>
+<div class="q"><div class="qh"><span class="qid pm">P10</span><span class="cat">Provoz</span></div>
+<p>Bezpečnostní incident na trati se stane v době, kdy rychlost řídil PitOS — a není jasné, kdo nese odpovědnost.</p>
+<div class="row"><select data-k="P10_v"><option value="">závažnost…</option><option>🔴 kritické</option><option>🟠 vážné</option><option>🟡 menší</option><option>⚪ neřešit</option></select>
+<div class="tw"><input data-k="P10_n" placeholder="jak tomu předejdeme? (🎤 diktuj)"><button type="button" class="mic">🎤</button></div></div></div>
+<div class="q"><div class="qh"><span class="qid pm">P11</span><span class="cat">Peníze &amp; právo</span></div>
+<p>DPH režim kreditů je nastaven špatně → doměrka z kontroly za celé období provozu.</p>
+<div class="row"><select data-k="P11_v"><option value="">závažnost…</option><option>🔴 kritické</option><option>🟠 vážné</option><option>🟡 menší</option><option>⚪ neřešit</option></select>
+<div class="tw"><input data-k="P11_n" placeholder="jak tomu předejdeme? (🎤 diktuj)"><button type="button" class="mic">🎤</button></div></div></div>
+<div class="q"><div class="qh"><span class="qid pm">P12</span><span class="cat">Peníze &amp; právo</span></div>
+<p>Rozpočet přeteče: „ještě tohle přidáme“ (scope creep) bez změny ceny a termínu.</p>
+<div class="row"><select data-k="P12_v"><option value="">závažnost…</option><option>🔴 kritické</option><option>🟠 vážné</option><option>🟡 menší</option><option>⚪ neřešit</option></select>
+<div class="tw"><input data-k="P12_n" placeholder="jak tomu předejdeme? (🎤 diktuj)"><button type="button" class="mic">🎤</button></div></div></div>
+<div class="q"><div class="qh"><span class="qid pm">P13</span><span class="cat">Peníze &amp; právo</span></div>
+<p>GDPR stížnost kvůli fotkám dětí z kiosku.</p>
+<div class="row"><select data-k="P13_v"><option value="">závažnost…</option><option>🔴 kritické</option><option>🟠 vážné</option><option>🟡 menší</option><option>⚪ neřešit</option></select>
+<div class="tw"><input data-k="P13_n" placeholder="jak tomu předejdeme? (🎤 diktuj)"><button type="button" class="mic">🎤</button></div></div></div>
+<div class="q"><div class="qh"><span class="qid pm">P14</span><span class="cat">Organizace</span></div>
+<p>Jiří je jediný, kdo všechno ví (product owner i doména) — nemoc/vytížení zastaví projekt.</p>
+<div class="row"><select data-k="P14_v"><option value="">závažnost…</option><option>🔴 kritické</option><option>🟠 vážné</option><option>🟡 menší</option><option>⚪ neřešit</option></select>
+<div class="tw"><input data-k="P14_n" placeholder="jak tomu předejdeme? (🎤 diktuj)"><button type="button" class="mic">🎤</button></div></div></div>
+<div class="q"><div class="qh"><span class="qid pm">P15</span><span class="cat">Organizace</span></div>
+<p>Vývojář webu pitland.cz nespolupracuje na API napojení a integrace uvázne.</p>
+<div class="row"><select data-k="P15_v"><option value="">závažnost…</option><option>🔴 kritické</option><option>🟠 vážné</option><option>🟡 menší</option><option>⚪ neřešit</option></select>
+<div class="tw"><input data-k="P15_n" placeholder="jak tomu předejdeme? (🎤 diktuj)"><button type="button" class="mic">🎤</button></div></div></div>
+<div class="q"><div class="qh"><span class="qid pm">P16</span><span class="cat">Organizace</span></div>
+<p>Repo a data nejsou od prvního dne u nás — při sporu s dodavatelem nemáme kód ani přístupy.</p>
+<div class="row"><select data-k="P16_v"><option value="">závažnost…</option><option>🔴 kritické</option><option>🟠 vážné</option><option>🟡 menší</option><option>⚪ neřešit</option></select>
+<div class="tw"><input data-k="P16_n" placeholder="jak tomu předejdeme? (🎤 diktuj)"><button type="button" class="mic">🎤</button></div></div></div>
+<div class="q own"><div class="qh"><span class="qid pm">+1</span><span class="cat">Vlastní důvod selhání</span></div>
+<div class="row"><div class="tw" style="flex:2"><input data-k="PX1_t" placeholder="Proč projekt selhal? (🎤 diktuj)"><button type="button" class="mic">🎤</button></div>
+<select data-k="PX1_v"><option value="">závažnost…</option><option>🔴 kritické</option><option>🟠 vážné</option><option>🟡 menší</option></select></div></div>
+<div class="q own"><div class="qh"><span class="qid pm">+2</span><span class="cat">Vlastní důvod selhání</span></div>
+<div class="row"><div class="tw" style="flex:2"><input data-k="PX2_t" placeholder="Proč projekt selhal? (🎤 diktuj)"><button type="button" class="mic">🎤</button></div>
+<select data-k="PX2_v"><option value="">závažnost…</option><option>🔴 kritické</option><option>🟠 vážné</option><option>🟡 menší</option></select></div></div>
+<div class="q own"><div class="qh"><span class="qid pm">+3</span><span class="cat">Vlastní důvod selhání</span></div>
+<div class="row"><div class="tw" style="flex:2"><input data-k="PX3_t" placeholder="Proč projekt selhal? (🎤 diktuj)"><button type="button" class="mic">🎤</button></div>
+<select data-k="PX3_v"><option value="">závažnost…</option><option>🔴 kritické</option><option>🟠 vážné</option><option>🟡 menší</option></select></div></div>
+<div class="q own"><div class="qh"><span class="qid pm">+4</span><span class="cat">Vlastní důvod selhání</span></div>
+<div class="row"><div class="tw" style="flex:2"><input data-k="PX4_t" placeholder="Proč projekt selhal? (🎤 diktuj)"><button type="button" class="mic">🎤</button></div>
+<select data-k="PX4_v"><option value="">závažnost…</option><option>🔴 kritické</option><option>🟠 vážné</option><option>🟡 menší</option></select></div></div>
+<div class="q own"><div class="qh"><span class="qid pm">+5</span><span class="cat">Vlastní důvod selhání</span></div>
+<div class="row"><div class="tw" style="flex:2"><input data-k="PX5_t" placeholder="Proč projekt selhal? (🎤 diktuj)"><button type="button" class="mic">🎤</button></div>
+<select data-k="PX5_v"><option value="">závažnost…</option><option>🔴 kritické</option><option>🟠 vážné</option><option>🟡 menší</option></select></div></div>
+</section>
+</main>
+<div class="bar"><button class="sec" onclick="showJson()">👁 JSON</button><button onclick="copyJson()">📤 Odeslat výsledek</button></div>
+<div id="out" style="display:none;max-width:680px;margin:0 auto 90px;padding:0 14px"><textarea readonly style="width:100%;min-height:200px;background:#0f141a;color:#c9d3de;border:1px solid var(--line);border-radius:9px;font:12px ui-monospace,monospace;padding:10px"></textarea></div>
+<script>
+const KEY='pitos_scenare_v1';let data={};try{data=JSON.parse(localStorage.getItem(KEY)||'{}')}catch(e){}
+function tab(i){document.querySelectorAll('section').forEach((s,j)=>s.classList.toggle('on',j===i-1));
+ document.getElementById('tb1').classList.toggle('on',i===1);document.getElementById('tb2').classList.toggle('on',i===2);}
+const els=[...document.querySelectorAll('[data-k]')];
+els.forEach(el=>{const k=el.dataset.k;if(data[k])el.value=data[k];
+ el.addEventListener('input',()=>{data[k]=el.value;try{localStorage.setItem(KEY,JSON.stringify(data))}catch(e){};mark(el);prog();});mark(el);});
+function mark(el){const q=el.closest('.q');if(!q)return;const sel=q.querySelector('select');q.classList.toggle('done',sel&&sel.value!=='');}
+function prog(){const qs=[...document.querySelectorAll('.q')];const d=qs.filter(q=>q.classList.contains('done')).length;
+ document.getElementById('prog').textContent=d+' / '+qs.length+' vyřízeno · ukládá se automaticky';}
+prog();
+function collect(){const o={exportedAt:new Date().toISOString(),polozky:{}};
+ document.querySelectorAll('.q').forEach(q=>{const id=q.querySelector('.qid').textContent;const vals={};
+  q.querySelectorAll('[data-k]').forEach(el=>{if(el.value)vals[el.dataset.k.split('_').pop()]=el.value});
+  if(Object.keys(vals).length){const p=q.querySelector('p');o.polozky[id]={text:p?p.textContent:(vals.t||''),...vals}}});
+ return JSON.stringify(o,null,2);}
+function showJson(){const d=document.getElementById('out');d.style.display='block';d.querySelector('textarea').value=collect();d.scrollIntoView();}
+async function copyJson(){const j=collect();
+ if(navigator.share){try{await navigator.share({title:'PitOS scénáře',text:j});return}catch(e){}}
+ try{await navigator.clipboard.writeText(j);alert('Zkopírováno — vlož do chatu.')}catch(e){showJson()}}
+(function(){const SR=window.SpeechRecognition||window.webkitSpeechRecognition;
+ const mics=document.querySelectorAll('.mic');
+ if(!SR){mics.forEach(b=>{b.style.opacity=.35;b.title='Použij mikrofon na klávesnici'});return}
+ let rec=null,act=null;
+ mics.forEach(btn=>btn.addEventListener('click',()=>{
+  if(act===btn){try{rec.stop()}catch(e){};return}
+  if(rec){try{rec.stop()}catch(e){}}
+  const ta=btn.closest('.tw').querySelector('input');
+  rec=new SR();rec.lang='cs-CZ';rec.continuous=true;rec.interimResults=true;
+  act=btn;btn.classList.add('rec');btn.textContent='⏹';
+  let base=ta.value?ta.value.replace(/\s+$/,'')+' ':'';
+  rec.onresult=e=>{let f='',i='';for(let r of e.results){if(r.isFinal)f+=r[0].transcript;else i+=r[0].transcript}
+   ta.value=(base+f+i).replace(/ {2,}/g,' ');ta.dispatchEvent(new Event('input'));};
+  rec.onend=()=>{btn.classList.remove('rec');btn.textContent='🎤';act=null;rec=null;};
+  rec.onerror=rec.onend;try{rec.start()}catch(e){rec.onend()}
+ }));})();
+</script></body></html>
