@@ -1,0 +1,607 @@
+<!DOCTYPE html><html lang="cs"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1">
+<title>PitOS — workshop checklist (F0)</title><style>
+:root{--acc:#e63946;--bg:#f7f8fa;--card:#fff;--tx:#1c1e21;--mut:#68707c;--line:#e3e6ea}
+*{box-sizing:border-box}body{margin:0;font:15px/1.5 -apple-system,Segoe UI,Roboto,sans-serif;background:var(--bg);color:var(--tx)}
+header{position:sticky;top:0;z-index:5;background:#111;color:#fff;padding:12px 22px;display:flex;gap:16px;align-items:center;flex-wrap:wrap}
+header h1{font-size:17px;margin:0}header .sp{flex:1}
+button{background:var(--acc);color:#fff;border:0;border-radius:8px;padding:9px 15px;font-weight:600;cursor:pointer;font-size:14px}
+button.sec{background:#333}
+#prog{font-size:13px;color:#bbb}
+main{max-width:1200px;margin:18px auto;padding:0 18px}
+.note{background:#fff8e6;border:1px solid #f0dfa8;border-radius:10px;padding:12px 16px;margin-bottom:16px;font-size:14px}
+table{width:100%;border-collapse:collapse;background:var(--card);border-radius:10px;overflow:hidden;box-shadow:0 1px 3px rgba(0,0,0,.06)}
+td{border-bottom:1px solid var(--line);padding:8px 10px;vertical-align:top}
+tr.mh td{background:#1c1e21;color:#fff;padding:10px 12px;font-size:15px}
+tr.mh .ph{background:var(--acc);border-radius:6px;padding:1px 8px;font-size:12px;margin-left:8px}
+.fn{width:46%;font-size:14px}
+select,input{width:100%;padding:7px 8px;border:1px solid var(--line);border-radius:7px;font-size:13.5px;background:#fff}
+tr.done .fn{color:var(--mut)}
+tr[data-k].done{background:#f4fbf5}
+.nw{display:flex;gap:6px;align-items:center}.nw input{flex:1}
+.mic{background:#eef1f5;color:#333;border:1px solid var(--line);border-radius:7px;padding:6px 9px;font-size:15px;cursor:pointer;line-height:1}
+.mic.rec{background:var(--acc);color:#fff;animation:pl 1s infinite}
+@keyframes pl{50%{opacity:.55}}
+footer{max-width:1200px;margin:20px auto 50px;padding:0 18px;color:var(--mut);font-size:13px}
+</style></head><body>
+<header><h1>PitOS · F0 workshop — 17 modulů, 128 funkcí</h1><span id="prog"></span><span class="sp"></span>
+<button class="sec" onclick="saveNow()">💾 Uložit</button>
+<button onclick="exportJSON()">⬇️ Export výsledku (JSON)</button></header>
+<main>
+<div class="note"><b>Jak na to:</b> u každé funkce vyber verdikt (✅ převzít / ✏️ změnit / ❌ vypustit / ⭐ nové / ❓ probrat), u ✅✏️⭐ prioritu MoSCoW, u ✏️ napiš do poznámky <i>jak</i> to změnit. Průběžně se to <b>samo ukládá v prohlížeči</b> (tohoto počítače) — můžeš zavřít a vrátit se. Až budeš hotov (klidně po částech), klikni <b>Export výsledku</b> a soubor JSON mi pošli do chatu — zapracuji ho do v1.0. Nemusíš vyplnit vše: prázdné = „probrat společně".</div>
+<table id="t"><tr class="mh"><td colspan="4"><b>M01 · Timing Engine — jádro časomíry</b> <span class="ph">F1</span></td></tr>
+<tr data-k="M01_1"><td class="fn">Adaptér dekodéru RaceResult ✅ POTVRZENO — Pitland má „RaceResult Timing Box“ připojený sériově (COM3 přes FTDI FT232R / USB Server), 1 smyčka (Loop 1) jako S/F. PitOS: přímé sériové čtení (bez USB Server mezivrstvy) nebo RR ethernet; parsování průjezdů (transpondér, čas, počet úhozů = síla signálu), diagnostika Power/Noise/teplota, detekce výpadku, rekonekt s dosynchronizací bufferu Budoucí alternativy (tržní analýza): MYLAPS X2/TR2, aktivní RFID ProChip, vlastní tag na CAN sběrnici ePitu (Q19) — adapter pattern to umožňuje bez zásahu do jádra.</td>
+<td><select class="v" data-k="M01_1_v"><option value=""></option><option>✅ používáme — převzít</option><option>✏️ používáme — změnit</option><option>❌ nepoužíváme — vypustit</option><option>⭐ nové — chceme</option><option>❓ nevím / probrat</option></select></td>
+<td><select class="p" data-k="M01_1_p"><option value=""></option><option>MUST</option><option>SHOULD</option><option>COULD</option><option>WON'T</option></select></td>
+<td><span class="nw"><input class="n" data-k="M01_1_n" placeholder="poznámka / jak změnit (nebo 🎤 diktuj)"><button type="button" class="mic" title="Diktovat (čeština)">🎤</button></span></td></tr>
+<tr data-k="M01_2"><td class="fn">Filtrace a deduplikace průjezdů — dle reality Apexu: min. čas kola (20 s na REGULAR), zamítnutí duplicitního průjezdu v ms okně s preferencí dle počtu úhozů, evidence průjezdů strojů mimo session, hlášení slabé baterie transpondéru do UI; ruční „vložit chybějící průjezd“ (maršálská korekce).</td>
+<td><select class="v" data-k="M01_2_v"><option value=""></option><option>✅ používáme — převzít</option><option>✏️ používáme — změnit</option><option>❌ nepoužíváme — vypustit</option><option>⭐ nové — chceme</option><option>❓ nevím / probrat</option></select></td>
+<td><select class="p" data-k="M01_2_p"><option value=""></option><option>MUST</option><option>SHOULD</option><option>COULD</option><option>WON'T</option></select></td>
+<td><span class="nw"><input class="n" data-k="M01_2_n" placeholder="poznámka / jak změnit (nebo 🎤 diktuj)"><button type="button" class="mic" title="Diktovat (čeština)">🎤</button></span></td></tr>
+<tr data-k="M01_3"><td class="fn">Výpočetní vrstva — přiřazení průjezdu jezdci přes transpondér→vozidlo→session; výpočet času kola, nejlepšího kola, mezičasů (I1/I2 připraveno, dnes nevyužito), pořadí dle typu session (practice = best lap; závod = kola + čas); průjezdy po cílové vlajce; pravidlo „vjezd do depa = nové kolo“ (konfigurovatelné).</td>
+<td><select class="v" data-k="M01_3_v"><option value=""></option><option>✅ používáme — převzít</option><option>✏️ používáme — změnit</option><option>❌ nepoužíváme — vypustit</option><option>⭐ nové — chceme</option><option>❓ nevím / probrat</option></select></td>
+<td><select class="p" data-k="M01_3_p"><option value=""></option><option>MUST</option><option>SHOULD</option><option>COULD</option><option>WON'T</option></select></td>
+<td><span class="nw"><input class="n" data-k="M01_3_n" placeholder="poznámka / jak změnit (nebo 🎤 diktuj)"><button type="button" class="mic" title="Diktovat (čeština)">🎤</button></span></td></tr>
+<tr data-k="M01_4"><td class="fn">Stavový automat session — created → armed (enable) → running → finished → closed. Dle Apex praxe: automatický start prvním průjezdem (volitelně jen pokud má stroj přiřazeného jezdce), automatický konec, dojezdové okno po cílové vlajce (dnes 3 min), posun startu, změna délky za běhu, reset s potvrzením.</td>
+<td><select class="v" data-k="M01_4_v"><option value=""></option><option>✅ používáme — převzít</option><option>✏️ používáme — změnit</option><option>❌ nepoužíváme — vypustit</option><option>⭐ nové — chceme</option><option>❓ nevím / probrat</option></select></td>
+<td><select class="p" data-k="M01_4_p"><option value=""></option><option>MUST</option><option>SHOULD</option><option>COULD</option><option>WON'T</option></select></td>
+<td><span class="nw"><input class="n" data-k="M01_4_n" placeholder="poznámka / jak změnit (nebo 🎤 diktuj)"><button type="button" class="mic" title="Diktovat (čeština)">🎤</button></span></td></tr>
+<tr data-k="M01_5"><td class="fn">Multi-session &amp; varianty tratě — souběžné sessions, filtrace dle transpondéru; varianta/směr tratě per session (REGULAR vs. REGULAR Left…) přepínaná z fronty („Změnit trať“).</td>
+<td><select class="v" data-k="M01_5_v"><option value=""></option><option>✅ používáme — převzít</option><option>✏️ používáme — změnit</option><option>❌ nepoužíváme — vypustit</option><option>⭐ nové — chceme</option><option>❓ nevím / probrat</option></select></td>
+<td><select class="p" data-k="M01_5_p"><option value=""></option><option>MUST</option><option>SHOULD</option><option>COULD</option><option>WON'T</option></select></td>
+<td><span class="nw"><input class="n" data-k="M01_5_n" placeholder="poznámka / jak změnit (nebo 🎤 diktuj)"><button type="button" class="mic" title="Diktovat (čeština)">🎤</button></span></td></tr>
+<tr data-k="M01_6"><td class="fn">Penalizace — manuální (maršál) i automatické (pravidla: překročení rychlosti v sektoru, kontakt…), stavy penalizací, týmové alerty.</td>
+<td><select class="v" data-k="M01_6_v"><option value=""></option><option>✅ používáme — převzít</option><option>✏️ používáme — změnit</option><option>❌ nepoužíváme — vypustit</option><option>⭐ nové — chceme</option><option>❓ nevím / probrat</option></select></td>
+<td><select class="p" data-k="M01_6_p"><option value=""></option><option>MUST</option><option>SHOULD</option><option>COULD</option><option>WON'T</option></select></td>
+<td><span class="nw"><input class="n" data-k="M01_6_n" placeholder="poznámka / jak změnit (nebo 🎤 diktuj)"><button type="button" class="mic" title="Diktovat (čeština)">🎤</button></span></td></tr>
+<tr data-k="M01_7"><td class="fn">Zvukové triggery — parita s Apexem: start, 1 min před cílem, cíl, „jezdec zastavil na trati“ (detekce chybějícího průjezdu v očekávaném okně).</td>
+<td><select class="v" data-k="M01_7_v"><option value=""></option><option>✅ používáme — převzít</option><option>✏️ používáme — změnit</option><option>❌ nepoužíváme — vypustit</option><option>⭐ nové — chceme</option><option>❓ nevím / probrat</option></select></td>
+<td><select class="p" data-k="M01_7_p"><option value=""></option><option>MUST</option><option>SHOULD</option><option>COULD</option><option>WON'T</option></select></td>
+<td><span class="nw"><input class="n" data-k="M01_7_n" placeholder="poznámka / jak změnit (nebo 🎤 diktuj)"><button type="button" class="mic" title="Diktovat (čeština)">🎤</button></span></td></tr>
+<tr data-k="M01_8"><td class="fn">Append-only žurnál — každý surový průjezd okamžitě na lokální disk (SQLite/WAL); po restartu rekonstrukce stavu; async replikace na Center Server.</td>
+<td><select class="v" data-k="M01_8_v"><option value=""></option><option>✅ používáme — převzít</option><option>✏️ používáme — změnit</option><option>❌ nepoužíváme — vypustit</option><option>⭐ nové — chceme</option><option>❓ nevím / probrat</option></select></td>
+<td><select class="p" data-k="M01_8_p"><option value=""></option><option>MUST</option><option>SHOULD</option><option>COULD</option><option>WON'T</option></select></td>
+<td><span class="nw"><input class="n" data-k="M01_8_n" placeholder="poznámka / jak změnit (nebo 🎤 diktuj)"><button type="button" class="mic" title="Diktovat (čeština)">🎤</button></span></td></tr>
+<tr data-k="M01_9"><td class="fn">Event stream — WebSocket/NATS publikace: passing, lap, position-change, flag, session-state. Konzumují maršál, TV, live, POS.</td>
+<td><select class="v" data-k="M01_9_v"><option value=""></option><option>✅ používáme — převzít</option><option>✏️ používáme — změnit</option><option>❌ nepoužíváme — vypustit</option><option>⭐ nové — chceme</option><option>❓ nevím / probrat</option></select></td>
+<td><select class="p" data-k="M01_9_p"><option value=""></option><option>MUST</option><option>SHOULD</option><option>COULD</option><option>WON'T</option></select></td>
+<td><span class="nw"><input class="n" data-k="M01_9_n" placeholder="poznámka / jak změnit (nebo 🎤 diktuj)"><button type="button" class="mic" title="Diktovat (čeština)">🎤</button></span></td></tr>
+<tr data-k="M01_10"><td class="fn">Session, SessionEntry (jezdec v session), Passing (surový průjezd), Lap, Sector, Penalty, Flag/Event log.</td>
+<td><select class="v" data-k="M01_10_v"><option value=""></option><option>✅ používáme — převzít</option><option>✏️ používáme — změnit</option><option>❌ nepoužíváme — vypustit</option><option>⭐ nové — chceme</option><option>❓ nevím / probrat</option></select></td>
+<td><select class="p" data-k="M01_10_p"><option value=""></option><option>MUST</option><option>SHOULD</option><option>COULD</option><option>WON'T</option></select></td>
+<td><span class="nw"><input class="n" data-k="M01_10_n" placeholder="poznámka / jak změnit (nebo 🎤 diktuj)"><button type="button" class="mic" title="Diktovat (čeština)">🎤</button></span></td></tr>
+<tr data-k="M01_11"><td class="fn">✅ Ověřeno: dekodér RaceResult Timing Box (COM3/FTDI, 1 smyčka Loop 1), aktivní transpondéry s baterií (kódy ZHRAK/ZJABH/ZIEBE/ZILAF/ZEWAC…, stav baterie hlášen dekodérem), podpora fotobuněk a pit IN/OUT smyček (nevyužito). MyLaps adaptér NENÍ potřeba.</td>
+<td><select class="v" data-k="M01_11_v"><option value=""></option><option>✅ používáme — převzít</option><option>✏️ používáme — změnit</option><option>❌ nepoužíváme — vypustit</option><option>⭐ nové — chceme</option><option>❓ nevím / probrat</option></select></td>
+<td><select class="p" data-k="M01_11_p"><option value=""></option><option>MUST</option><option>SHOULD</option><option>COULD</option><option>WON'T</option></select></td>
+<td><span class="nw"><input class="n" data-k="M01_11_n" placeholder="poznámka / jak změnit (nebo 🎤 diktuj)"><button type="button" class="mic" title="Diktovat (čeština)">🎤</button></span></td></tr>
+<tr data-k="M01_12"><td class="fn">D02 (Session management, timing, started, finished) + H (smyčky, dekodéry, transpondéry).</td>
+<td><select class="v" data-k="M01_12_v"><option value=""></option><option>✅ používáme — převzít</option><option>✏️ používáme — změnit</option><option>❌ nepoužíváme — vypustit</option><option>⭐ nové — chceme</option><option>❓ nevím / probrat</option></select></td>
+<td><select class="p" data-k="M01_12_p"><option value=""></option><option>MUST</option><option>SHOULD</option><option>COULD</option><option>WON'T</option></select></td>
+<td><span class="nw"><input class="n" data-k="M01_12_n" placeholder="poznámka / jak změnit (nebo 🎤 diktuj)"><button type="button" class="mic" title="Diktovat (čeština)">🎤</button></span></td></tr>
+<tr class="mh"><td colspan="4"><b>M02 · Řízení rychlosti &amp; bezpečnost</b> <span class="ph">F1</span></td></tr>
+<tr data-k="M02_13"><td class="fn">SpeedAdapter rozhraní — příkazy dle ověřené DeHaardt sady: setSpeed(stroj|skupina|vše, SPD1–4), setAuto(session), stopAll(), test(stroj); rozšíření: setMap(stroj|skupina, mapa), slowdownZone(sektor, %). Implementace: DeHaardt AP protokol (Q3b) nebo náhradní gateway.</td>
+<td><select class="v" data-k="M02_13_v"><option value=""></option><option>✅ používáme — převzít</option><option>✏️ používáme — změnit</option><option>❌ nepoužíváme — vypustit</option><option>⭐ nové — chceme</option><option>❓ nevím / probrat</option></select></td>
+<td><select class="p" data-k="M02_13_p"><option value=""></option><option>MUST</option><option>SHOULD</option><option>COULD</option><option>WON'T</option></select></td>
+<td><span class="nw"><input class="n" data-k="M02_13_n" placeholder="poznámka / jak změnit (nebo 🎤 diktuj)"><button type="button" class="mic" title="Diktovat (čeština)">🎤</button></span></td></tr>
+<tr data-k="M02_14"><td class="fn">Rychlostní profily — výchozí rychlost per model stroje a per prodaný produkt (mapa 2 / mapa 3 / úroveň okruhu REGULAR→RACE MAX PRO = dnes reálné produktové stupně); pravidlo: jednotlivému stroji lze rychlost jen snížit pod default, ne zvýšit.</td>
+<td><select class="v" data-k="M02_14_v"><option value=""></option><option>✅ používáme — převzít</option><option>✏️ používáme — změnit</option><option>❌ nepoužíváme — vypustit</option><option>⭐ nové — chceme</option><option>❓ nevím / probrat</option></select></td>
+<td><select class="p" data-k="M02_14_p"><option value=""></option><option>MUST</option><option>SHOULD</option><option>COULD</option><option>WON'T</option></select></td>
+<td><span class="nw"><input class="n" data-k="M02_14_n" placeholder="poznámka / jak změnit (nebo 🎤 diktuj)"><button type="button" class="mic" title="Diktovat (čeština)">🎤</button></span></td></tr>
+<tr data-k="M02_15"><td class="fn">Safety stavový automat — vyhlášení safety (deaktivace AUTO režimu, všichni na SPDx) → omezené zvýšení (max speed 2) → konec safety (návrat AUTO). Vazba na semafor a vlajky.</td>
+<td><select class="v" data-k="M02_15_v"><option value=""></option><option>✅ používáme — převzít</option><option>✏️ používáme — změnit</option><option>❌ nepoužíváme — vypustit</option><option>⭐ nové — chceme</option><option>❓ nevím / probrat</option></select></td>
+<td><select class="p" data-k="M02_15_p"><option value=""></option><option>MUST</option><option>SHOULD</option><option>COULD</option><option>WON'T</option></select></td>
+<td><span class="nw"><input class="n" data-k="M02_15_n" placeholder="poznámka / jak změnit (nebo 🎤 diktuj)"><button type="button" class="mic" title="Diktovat (čeština)">🎤</button></span></td></tr>
+<tr data-k="M02_16"><td class="fn">Zpomalení po cílové vlajce — automatické snížení na X % v definovaném sektoru; interlock: session nelze deaktivovat, dokud všechny stroje neprojedou do boxů (počítáno z průjezdů).</td>
+<td><select class="v" data-k="M02_16_v"><option value=""></option><option>✅ používáme — převzít</option><option>✏️ používáme — změnit</option><option>❌ nepoužíváme — vypustit</option><option>⭐ nové — chceme</option><option>❓ nevím / probrat</option></select></td>
+<td><select class="p" data-k="M02_16_p"><option value=""></option><option>MUST</option><option>SHOULD</option><option>COULD</option><option>WON'T</option></select></td>
+<td><span class="nw"><input class="n" data-k="M02_16_n" placeholder="poznámka / jak změnit (nebo 🎤 diktuj)"><button type="button" class="mic" title="Diktovat (čeština)">🎤</button></span></td></tr>
+<tr data-k="M02_17"><td class="fn">Watchdog + fail-safe — heartbeat mezi Track Core a speed gateway; při ztrátě spojení definované bezpečné chování (např. stroje drží poslední limit / přechod na lokální default); alarm maršálovi.</td>
+<td><select class="v" data-k="M02_17_v"><option value=""></option><option>✅ používáme — převzít</option><option>✏️ používáme — změnit</option><option>❌ nepoužíváme — vypustit</option><option>⭐ nové — chceme</option><option>❓ nevím / probrat</option></select></td>
+<td><select class="p" data-k="M02_17_p"><option value=""></option><option>MUST</option><option>SHOULD</option><option>COULD</option><option>WON'T</option></select></td>
+<td><span class="nw"><input class="n" data-k="M02_17_n" placeholder="poznámka / jak změnit (nebo 🎤 diktuj)"><button type="button" class="mic" title="Diktovat (čeština)">🎤</button></span></td></tr>
+<tr data-k="M02_18"><td class="fn">Penalizace rychlostí — dočasné zpomalení konkrétního jezdce jako výkon trestu, automatický návrat.</td>
+<td><select class="v" data-k="M02_18_v"><option value=""></option><option>✅ používáme — převzít</option><option>✏️ používáme — změnit</option><option>❌ nepoužíváme — vypustit</option><option>⭐ nové — chceme</option><option>❓ nevím / probrat</option></select></td>
+<td><select class="p" data-k="M02_18_p"><option value=""></option><option>MUST</option><option>SHOULD</option><option>COULD</option><option>WON'T</option></select></td>
+<td><span class="nw"><input class="n" data-k="M02_18_n" placeholder="poznámka / jak změnit (nebo 🎤 diktuj)"><button type="button" class="mic" title="Diktovat (čeština)">🎤</button></span></td></tr>
+<tr data-k="M02_19"><td class="fn">Ovládání semaforu — RelayAdapter pro Phidget (USB/ethernet): světla dle stavu session (Lights setup per session).</td>
+<td><select class="v" data-k="M02_19_v"><option value=""></option><option>✅ používáme — převzít</option><option>✏️ používáme — změnit</option><option>❌ nepoužíváme — vypustit</option><option>⭐ nové — chceme</option><option>❓ nevím / probrat</option></select></td>
+<td><select class="p" data-k="M02_19_p"><option value=""></option><option>MUST</option><option>SHOULD</option><option>COULD</option><option>WON'T</option></select></td>
+<td><span class="nw"><input class="n" data-k="M02_19_n" placeholder="poznámka / jak změnit (nebo 🎤 diktuj)"><button type="button" class="mic" title="Diktovat (čeština)">🎤</button></span></td></tr>
+<tr data-k="M02_20"><td class="fn">✅ Ověřeno: DeHaardt AP (přístupový bod) + přijímače na strojích; semafor/vlajky ovládané z maršálské lišty (zelená/žlutá/červená/bílá + STOP). K doplnění: model AP, protokol, dálkový ovladač (Q3b).</td>
+<td><select class="v" data-k="M02_20_v"><option value=""></option><option>✅ používáme — převzít</option><option>✏️ používáme — změnit</option><option>❌ nepoužíváme — vypustit</option><option>⭐ nové — chceme</option><option>❓ nevím / probrat</option></select></td>
+<td><select class="p" data-k="M02_20_p"><option value=""></option><option>MUST</option><option>SHOULD</option><option>COULD</option><option>WON'T</option></select></td>
+<td><span class="nw"><input class="n" data-k="M02_20_n" placeholder="poznámka / jak změnit (nebo 🎤 diktuj)"><button type="button" class="mic" title="Diktovat (čeština)">🎤</button></span></td></tr>
+<tr data-k="M02_21"><td class="fn">H §1 (DeHaardt), D02 Lights setup, penalizace.</td>
+<td><select class="v" data-k="M02_21_v"><option value=""></option><option>✅ používáme — převzít</option><option>✏️ používáme — změnit</option><option>❌ nepoužíváme — vypustit</option><option>⭐ nové — chceme</option><option>❓ nevím / probrat</option></select></td>
+<td><select class="p" data-k="M02_21_p"><option value=""></option><option>MUST</option><option>SHOULD</option><option>COULD</option><option>WON'T</option></select></td>
+<td><span class="nw"><input class="n" data-k="M02_21_n" placeholder="poznámka / jak změnit (nebo 🎤 diktuj)"><button type="button" class="mic" title="Diktovat (čeština)">🎤</button></span></td></tr>
+<tr class="mh"><td colspan="4"><b>M03 · Maršál — řízení rozjížděk</b> <span class="ph">F1</span></td></tr>
+<tr data-k="M03_22"><td class="fn">Fronta sessions — denní rozpis dle reality Apexu: číslo + název (produkt: „1hod_(1)“, „VJ_(2)“, „ÚVOD“…) + plánovaný čas + reálný start + počet jezdců + stav (dokončeno = šachovnice); štítek varianty tratě per session (REGULAR/Left); přeuspořádání, vložení session, ad-hoc založení. ✅ Dle provozu: „Akce&quot; (rezervační skupiny) se přetahují drag&amp;drop do fronty Jízd — jezdci se překopírují do session u maršála; v PitOS first-class operace „nasadit akci do session&quot; (drag&amp;drop i tlačítko) s přenosem jezdců, produktů a varianty tratě.</td>
+<td><select class="v" data-k="M03_22_v"><option value=""></option><option>✅ používáme — převzít</option><option>✏️ používáme — změnit</option><option>❌ nepoužíváme — vypustit</option><option>⭐ nové — chceme</option><option>❓ nevím / probrat</option></select></td>
+<td><select class="p" data-k="M03_22_p"><option value=""></option><option>MUST</option><option>SHOULD</option><option>COULD</option><option>WON'T</option></select></td>
+<td><span class="nw"><input class="n" data-k="M03_22_n" placeholder="poznámka / jak změnit (nebo 🎤 diktuj)"><button type="button" class="mic" title="Diktovat (čeština)">🎤</button></span></td></tr>
+<tr data-k="M03_23"><td class="fn">Nástup jezdců — jmenný seznam s indikací zaplacení („lístek na jízdu“)/waiveru; kopírovat do další jízdy (F5) / přesunout do jiné jízdy (F6); ruční přidání mimo pokladnu; registrace člena kartou; barevné špendlíky pro označení jezdců.</td>
+<td><select class="v" data-k="M03_23_v"><option value=""></option><option>✅ používáme — převzít</option><option>✏️ používáme — změnit</option><option>❌ nepoužíváme — vypustit</option><option>⭐ nové — chceme</option><option>❓ nevím / probrat</option></select></td>
+<td><select class="p" data-k="M03_23_p"><option value=""></option><option>MUST</option><option>SHOULD</option><option>COULD</option><option>WON'T</option></select></td>
+<td><span class="nw"><input class="n" data-k="M03_23_n" placeholder="poznámka / jak změnit (nebo 🎤 diktuj)"><button type="button" class="mic" title="Diktovat (čeština)">🎤</button></span></td></tr>
+<tr data-k="M03_24"><td class="fn">Přiřazení motorky (klíčová funkce) — ✅ dle provozní reality: výchozí je RUČNÍ přiřazení a jezdec drží STEJNÝ stroj po celou návštěvu (přes více sessions). Podpora: drag / ruční zápis / auto (Ctrl+K) jen jako volitelný nástroj; import přiřazení z předchozí jízdy; kontrola servisní blokace, výstroje, nabití.</td>
+<td><select class="v" data-k="M03_24_v"><option value=""></option><option>✅ používáme — převzít</option><option>✏️ používáme — změnit</option><option>❌ nepoužíváme — vypustit</option><option>⭐ nové — chceme</option><option>❓ nevím / probrat</option></select></td>
+<td><select class="p" data-k="M03_24_p"><option value=""></option><option>MUST</option><option>SHOULD</option><option>COULD</option><option>WON'T</option></select></td>
+<td><span class="nw"><input class="n" data-k="M03_24_n" placeholder="poznámka / jak změnit (nebo 🎤 diktuj)"><button type="button" class="mic" title="Diktovat (čeština)">🎤</button></span></td></tr>
+<tr data-k="M03_25"><td class="fn">Řízení běhu — enable (armed) → auto-start prvním průjezdem / ručně vlajkou; pauza, reset s potvrzením, cílová vlajka auto/manuál, dojezdové okno, změna délky za běhu; tlačítko SAFETY a STOP na jeden dotyk (volá M02); ovládání semaforu (zelená/žlutá/červená/bílá) přímo v liště.</td>
+<td><select class="v" data-k="M03_25_v"><option value=""></option><option>✅ používáme — převzít</option><option>✏️ používáme — změnit</option><option>❌ nepoužíváme — vypustit</option><option>⭐ nové — chceme</option><option>❓ nevím / probrat</option></select></td>
+<td><select class="p" data-k="M03_25_p"><option value=""></option><option>MUST</option><option>SHOULD</option><option>COULD</option><option>WON'T</option></select></td>
+<td><span class="nw"><input class="n" data-k="M03_25_n" placeholder="poznámka / jak změnit (nebo 🎤 diktuj)"><button type="button" class="mic" title="Diktovat (čeština)">🎤</button></span></td></tr>
+<tr data-k="M03_26"><td class="fn">Korekce časomíry — „vložit chybějící průjezd“, zamítnutí/obnovení průjezdu, penalizace — vše auditované (kdo/kdy/proč).</td>
+<td><select class="v" data-k="M03_26_v"><option value=""></option><option>✅ používáme — převzít</option><option>✏️ používáme — změnit</option><option>❌ nepoužíváme — vypustit</option><option>⭐ nové — chceme</option><option>❓ nevím / probrat</option></select></td>
+<td><select class="p" data-k="M03_26_p"><option value=""></option><option>MUST</option><option>SHOULD</option><option>COULD</option><option>WON'T</option></select></td>
+<td><span class="nw"><input class="n" data-k="M03_26_n" placeholder="poznámka / jak změnit (nebo 🎤 diktuj)"><button type="button" class="mic" title="Diktovat (čeština)">🎤</button></span></td></tr>
+<tr data-k="M03_27"><td class="fn">Mobilní companion (PWA) — ekvivalent GoControl: skenování náramků/karet u výjezdu z depa, příjem lístků i po startu jízdy, rychlé akce maršála z telefonu.</td>
+<td><select class="v" data-k="M03_27_v"><option value=""></option><option>✅ používáme — převzít</option><option>✏️ používáme — změnit</option><option>❌ nepoužíváme — vypustit</option><option>⭐ nové — chceme</option><option>❓ nevím / probrat</option></select></td>
+<td><select class="p" data-k="M03_27_p"><option value=""></option><option>MUST</option><option>SHOULD</option><option>COULD</option><option>WON'T</option></select></td>
+<td><span class="nw"><input class="n" data-k="M03_27_n" placeholder="poznámka / jak změnit (nebo 🎤 diktuj)"><button type="button" class="mic" title="Diktovat (čeština)">🎤</button></span></td></tr>
+<tr data-k="M03_28"><td class="fn">Výměna stroje za jízdy — přetažení nového čísla na jezdce, kontinuita časů, stará motorka označena k servisu.</td>
+<td><select class="v" data-k="M03_28_v"><option value=""></option><option>✅ používáme — převzít</option><option>✏️ používáme — změnit</option><option>❌ nepoužíváme — vypustit</option><option>⭐ nové — chceme</option><option>❓ nevím / probrat</option></select></td>
+<td><select class="p" data-k="M03_28_p"><option value=""></option><option>MUST</option><option>SHOULD</option><option>COULD</option><option>WON'T</option></select></td>
+<td><span class="nw"><input class="n" data-k="M03_28_n" placeholder="poznámka / jak změnit (nebo 🎤 diktuj)"><button type="button" class="mic" title="Diktovat (čeština)">🎤</button></span></td></tr>
+<tr data-k="M03_29"><td class="fn">Penalizace UI — rychlé udělení trestu jezdci/týmu, přehled stavů.</td>
+<td><select class="v" data-k="M03_29_v"><option value=""></option><option>✅ používáme — převzít</option><option>✏️ používáme — změnit</option><option>❌ nepoužíváme — vypustit</option><option>⭐ nové — chceme</option><option>❓ nevím / probrat</option></select></td>
+<td><select class="p" data-k="M03_29_p"><option value=""></option><option>MUST</option><option>SHOULD</option><option>COULD</option><option>WON'T</option></select></td>
+<td><span class="nw"><input class="n" data-k="M03_29_n" placeholder="poznámka / jak změnit (nebo 🎤 diktuj)"><button type="button" class="mic" title="Diktovat (čeština)">🎤</button></span></td></tr>
+<tr data-k="M03_30"><td class="fn">Výsledky — obrazovka výsledků po cílové vlajce; tisková sada dle Apexu: seznam účastníků, startovní rošt, pořadí/neoficiální pořadí, rekordy a analýza času kola, zastavení v pitu, výsledky; „poslat výsledky členům“ e-mailem jedním klikem.</td>
+<td><select class="v" data-k="M03_30_v"><option value=""></option><option>✅ používáme — převzít</option><option>✏️ používáme — změnit</option><option>❌ nepoužíváme — vypustit</option><option>⭐ nové — chceme</option><option>❓ nevím / probrat</option></select></td>
+<td><select class="p" data-k="M03_30_p"><option value=""></option><option>MUST</option><option>SHOULD</option><option>COULD</option><option>WON'T</option></select></td>
+<td><span class="nw"><input class="n" data-k="M03_30_n" placeholder="poznámka / jak změnit (nebo 🎤 diktuj)"><button type="button" class="mic" title="Diktovat (čeština)">🎤</button></span></td></tr>
+<tr data-k="M03_31"><td class="fn">Velké dotykové UI — návrh pro tablet v rukavicích, vysoký kontrast pro venkovní čitelnost, offline tolerance (PWA cache, reconnect).</td>
+<td><select class="v" data-k="M03_31_v"><option value=""></option><option>✅ používáme — převzít</option><option>✏️ používáme — změnit</option><option>❌ nepoužíváme — vypustit</option><option>⭐ nové — chceme</option><option>❓ nevím / probrat</option></select></td>
+<td><select class="p" data-k="M03_31_p"><option value=""></option><option>MUST</option><option>SHOULD</option><option>COULD</option><option>WON'T</option></select></td>
+<td><span class="nw"><input class="n" data-k="M03_31_n" placeholder="poznámka / jak změnit (nebo 🎤 diktuj)"><button type="button" class="mic" title="Diktovat (čeština)">🎤</button></span></td></tr>
+<tr data-k="M03_32"><td class="fn">D02 kompletní provozní část (session management, started, finished, tisk výsledků).</td>
+<td><select class="v" data-k="M03_32_v"><option value=""></option><option>✅ používáme — převzít</option><option>✏️ používáme — změnit</option><option>❌ nepoužíváme — vypustit</option><option>⭐ nové — chceme</option><option>❓ nevím / probrat</option></select></td>
+<td><select class="p" data-k="M03_32_p"><option value=""></option><option>MUST</option><option>SHOULD</option><option>COULD</option><option>WON'T</option></select></td>
+<td><span class="nw"><input class="n" data-k="M03_32_n" placeholder="poznámka / jak změnit (nebo 🎤 diktuj)"><button type="button" class="mic" title="Diktovat (čeština)">🎤</button></span></td></tr>
+<tr class="mh"><td colspan="4"><b>M04 · Flotila &amp; servis motorek</b> <span class="ph">F1</span></td></tr>
+<tr data-k="M04_33"><td class="fn">Registr strojů — číslo, model, transpondér, VIN/výrobní číslo, stav (aktivní / v servisu / archiv se zachováním historie), QR/barcode štítek s tiskem.</td>
+<td><select class="v" data-k="M04_33_v"><option value=""></option><option>✅ používáme — převzít</option><option>✏️ používáme — změnit</option><option>❌ nepoužíváme — vypustit</option><option>⭐ nové — chceme</option><option>❓ nevím / probrat</option></select></td>
+<td><select class="p" data-k="M04_33_p"><option value=""></option><option>MUST</option><option>SHOULD</option><option>COULD</option><option>WON'T</option></select></td>
+<td><span class="nw"><input class="n" data-k="M04_33_n" placeholder="poznámka / jak změnit (nebo 🎤 diktuj)"><button type="button" class="mic" title="Diktovat (čeština)">🎤</button></span></td></tr>
+<tr data-k="M04_34"><td class="fn">Modely strojů — název, zkratka, barva, přiřazené tratě, rychlostní profil (vazba na M02), kategorie (dětská/dospělá/sport).</td>
+<td><select class="v" data-k="M04_34_v"><option value=""></option><option>✅ používáme — převzít</option><option>✏️ používáme — změnit</option><option>❌ nepoužíváme — vypustit</option><option>⭐ nové — chceme</option><option>❓ nevím / probrat</option></select></td>
+<td><select class="p" data-k="M04_34_p"><option value=""></option><option>MUST</option><option>SHOULD</option><option>COULD</option><option>WON'T</option></select></td>
+<td><span class="nw"><input class="n" data-k="M04_34_n" placeholder="poznámka / jak změnit (nebo 🎤 diktuj)"><button type="button" class="mic" title="Diktovat (čeština)">🎤</button></span></td></tr>
+<tr data-k="M04_35"><td class="fn">Motohodiny &amp; nájezd — automatický výpočet z odjetých sessions; počítadla od poslední údržby. (Ověřeno naživo: Apex motohodiny, jízdy i kola per stroj eviduje — nutná plná parita.)</td>
+<td><select class="v" data-k="M04_35_v"><option value=""></option><option>✅ používáme — převzít</option><option>✏️ používáme — změnit</option><option>❌ nepoužíváme — vypustit</option><option>⭐ nové — chceme</option><option>❓ nevím / probrat</option></select></td>
+<td><select class="p" data-k="M04_35_p"><option value=""></option><option>MUST</option><option>SHOULD</option><option>COULD</option><option>WON'T</option></select></td>
+<td><span class="nw"><input class="n" data-k="M04_35_n" placeholder="poznámka / jak změnit (nebo 🎤 diktuj)"><button type="button" class="mic" title="Diktovat (čeština)">🎤</button></span></td></tr>
+<tr data-k="M04_36"><td class="fn">Servisní intervaly — definice per typ údržby v dnech i motohodinách (parita s Apex: pneu/brzdy/kapalina/měsíční), navíc automatická blokace stroje po překročení intervalu a notifikace dílně (Apex jen zobrazuje červený pruh).</td>
+<td><select class="v" data-k="M04_36_v"><option value=""></option><option>✅ používáme — převzít</option><option>✏️ používáme — změnit</option><option>❌ nepoužíváme — vypustit</option><option>⭐ nové — chceme</option><option>❓ nevím / probrat</option></select></td>
+<td><select class="p" data-k="M04_36_p"><option value=""></option><option>MUST</option><option>SHOULD</option><option>COULD</option><option>WON'T</option></select></td>
+<td><span class="nw"><input class="n" data-k="M04_36_n" placeholder="poznámka / jak změnit (nebo 🎤 diktuj)"><button type="button" class="mic" title="Diktovat (čeština)">🎤</button></span></td></tr>
+<tr data-k="M04_37"><td class="fn">Elektro telemetrie (nad rámec Apexu i trhu) — stav baterie (SoC), nabíjecí cykly, rotace baterií/strojů dle nabití, prediktivní údržba z motohodin + cyklů; zdroj dat: nabíječky/BMS, výhledově CAN tag (Q19).</td>
+<td><select class="v" data-k="M04_37_v"><option value=""></option><option>✅ používáme — převzít</option><option>✏️ používáme — změnit</option><option>❌ nepoužíváme — vypustit</option><option>⭐ nové — chceme</option><option>❓ nevím / probrat</option></select></td>
+<td><select class="p" data-k="M04_37_p"><option value=""></option><option>MUST</option><option>SHOULD</option><option>COULD</option><option>WON'T</option></select></td>
+<td><span class="nw"><input class="n" data-k="M04_37_n" placeholder="poznámka / jak změnit (nebo 🎤 diktuj)"><button type="button" class="mic" title="Diktovat (čeština)">🎤</button></span></td></tr>
+<tr data-k="M04_38"><td class="fn">Servisní deník — záznamy údržby s typem (číselník), popisem, náhradními díly (vazba na sklad M06), mechanikem a časem; historie per stroj.</td>
+<td><select class="v" data-k="M04_38_v"><option value=""></option><option>✅ používáme — převzít</option><option>✏️ používáme — změnit</option><option>❌ nepoužíváme — vypustit</option><option>⭐ nové — chceme</option><option>❓ nevím / probrat</option></select></td>
+<td><select class="p" data-k="M04_38_p"><option value=""></option><option>MUST</option><option>SHOULD</option><option>COULD</option><option>WON'T</option></select></td>
+<td><span class="nw"><input class="n" data-k="M04_38_n" placeholder="poznámka / jak změnit (nebo 🎤 diktuj)"><button type="button" class="mic" title="Diktovat (čeština)">🎤</button></span></td></tr>
+<tr data-k="M04_39"><td class="fn">Výměna transpondéru — přeregistrace s platností od času X (aby se staré průjezdy nepřepsaly).</td>
+<td><select class="v" data-k="M04_39_v"><option value=""></option><option>✅ používáme — převzít</option><option>✏️ používáme — změnit</option><option>❌ nepoužíváme — vypustit</option><option>⭐ nové — chceme</option><option>❓ nevím / probrat</option></select></td>
+<td><select class="p" data-k="M04_39_p"><option value=""></option><option>MUST</option><option>SHOULD</option><option>COULD</option><option>WON'T</option></select></td>
+<td><span class="nw"><input class="n" data-k="M04_39_n" placeholder="poznámka / jak změnit (nebo 🎤 diktuj)"><button type="button" class="mic" title="Diktovat (čeština)">🎤</button></span></td></tr>
+<tr data-k="M04_40"><td class="fn">D02 Karts settings + Karts maintenance; rozšířeno o motohodiny a intervaly.</td>
+<td><select class="v" data-k="M04_40_v"><option value=""></option><option>✅ používáme — převzít</option><option>✏️ používáme — změnit</option><option>❌ nepoužíváme — vypustit</option><option>⭐ nové — chceme</option><option>❓ nevím / probrat</option></select></td>
+<td><select class="p" data-k="M04_40_p"><option value=""></option><option>MUST</option><option>SHOULD</option><option>COULD</option><option>WON'T</option></select></td>
+<td><span class="nw"><input class="n" data-k="M04_40_n" placeholder="poznámka / jak změnit (nebo 🎤 diktuj)"><button type="button" class="mic" title="Diktovat (čeština)">🎤</button></span></td></tr>
+<tr class="mh"><td colspan="4"><b>M05 · Zákazníci, kiosek &amp; waivery</b> <span class="ph">F2</span></td></tr>
+<tr data-k="M05_41"><td class="fn">Karta člena — povinná pole (jméno, příjmení, datum narození) + konfigurovatelná a custom pole; kategorie Adult / Junior / Minor (hranice dle věku, konfigurovatelné); e-mail validace se stavy (doručitelný / bounce / duplicitní); vztahy člen–člen (rodič/opatrovník–dítě).</td>
+<td><select class="v" data-k="M05_41_v"><option value=""></option><option>✅ používáme — převzít</option><option>✏️ používáme — změnit</option><option>❌ nepoužíváme — vypustit</option><option>⭐ nové — chceme</option><option>❓ nevím / probrat</option></select></td>
+<td><select class="p" data-k="M05_41_p"><option value=""></option><option>MUST</option><option>SHOULD</option><option>COULD</option><option>WON'T</option></select></td>
+<td><span class="nw"><input class="n" data-k="M05_41_n" placeholder="poznámka / jak změnit (nebo 🎤 diktuj)"><button type="button" class="mic" title="Diktovat (čeština)">🎤</button></span></td></tr>
+<tr data-k="M05_42"><td class="fn">Waivery — verzované dokumenty per kategorie signatáře; podpisové pole + foto signatáře; změna textu invaliduje podpisy a vynutí nový podpis; alerty na nepodepsaný waiver na POS a u maršála (blokace nástupu); pravidla: minor sám se neregistruje, junior má účet blokovaný do podpisu rodiče, přeřazení opatrovníka.</td>
+<td><select class="v" data-k="M05_42_v"><option value=""></option><option>✅ používáme — převzít</option><option>✏️ používáme — změnit</option><option>❌ nepoužíváme — vypustit</option><option>⭐ nové — chceme</option><option>❓ nevím / probrat</option></select></td>
+<td><select class="p" data-k="M05_42_p"><option value=""></option><option>MUST</option><option>SHOULD</option><option>COULD</option><option>WON'T</option></select></td>
+<td><span class="nw"><input class="n" data-k="M05_42_n" placeholder="poznámka / jak změnit (nebo 🎤 diktuj)"><button type="button" class="mic" title="Diktovat (čeština)">🎤</button></span></td></tr>
+<tr data-k="M05_43"><td class="fn">Kiosek app — dotykový průvodce: Adult / Adult+Minors / Junior registrace, podpis, foto, sken členské karty, FUN prvky (volitelné); web-kiosek jako embed na pitland.cz.</td>
+<td><select class="v" data-k="M05_43_v"><option value=""></option><option>✅ používáme — převzít</option><option>✏️ používáme — změnit</option><option>❌ nepoužíváme — vypustit</option><option>⭐ nové — chceme</option><option>❓ nevím / probrat</option></select></td>
+<td><select class="p" data-k="M05_43_p"><option value=""></option><option>MUST</option><option>SHOULD</option><option>COULD</option><option>WON'T</option></select></td>
+<td><span class="nw"><input class="n" data-k="M05_43_n" placeholder="poznámka / jak změnit (nebo 🎤 diktuj)"><button type="button" class="mic" title="Diktovat (čeština)">🎤</button></span></td></tr>
+<tr data-k="M05_44"><td class="fn">Členské karty — fyzické (sken → přiřazení novému/existujícímu členovi), virtuální (v PWA, QR), typy osobní/skupinová/produktová, dárková karta, sdílení kreditů více členy, hromadný tisk.</td>
+<td><select class="v" data-k="M05_44_v"><option value=""></option><option>✅ používáme — převzít</option><option>✏️ používáme — změnit</option><option>❌ nepoužíváme — vypustit</option><option>⭐ nové — chceme</option><option>❓ nevím / probrat</option></select></td>
+<td><select class="p" data-k="M05_44_p"><option value=""></option><option>MUST</option><option>SHOULD</option><option>COULD</option><option>WON'T</option></select></td>
+<td><span class="nw"><input class="n" data-k="M05_44_n" placeholder="poznámka / jak změnit (nebo 🎤 diktuj)"><button type="button" class="mic" title="Diktovat (čeština)">🎤</button></span></td></tr>
+<tr data-k="M05_45"><td class="fn">Peněženka &amp; countery — virtuální peněženka (ledger, vázaná na člena), věrnostní body (X jízd = 1 zdarma), kredity s kurzem Kč/kredit; použitelné jako platba na POS i online. ✅ Dle reality Apexu: oddělené řady „Doklad&quot; (peníze) a „Transakce&quot; (kreditní pohyby); dnes se kredity běžně upravují ručně („Pole Kredity bylo upraveno ručně&quot;) — v PitOS ruční zásah jen jako auditovaný ledger pohyb s povinným důvodem; vyjasnit záporné zůstatky (Q14/Q17).</td>
+<td><select class="v" data-k="M05_45_v"><option value=""></option><option>✅ používáme — převzít</option><option>✏️ používáme — změnit</option><option>❌ nepoužíváme — vypustit</option><option>⭐ nové — chceme</option><option>❓ nevím / probrat</option></select></td>
+<td><select class="p" data-k="M05_45_p"><option value=""></option><option>MUST</option><option>SHOULD</option><option>COULD</option><option>WON'T</option></select></td>
+<td><span class="nw"><input class="n" data-k="M05_45_n" placeholder="poznámka / jak změnit (nebo 🎤 diktuj)"><button type="button" class="mic" title="Diktovat (čeština)">🎤</button></span></td></tr>
+<tr data-k="M05_46"><td class="fn">Úrovně jezdce — algoritmus Amateur→Legend dle frekvence a výkonnosti (vstup pro TV a marketing); u motorek navíc oprávnění/skill level řídící povolené modely strojů a rychlostní profily.</td>
+<td><select class="v" data-k="M05_46_v"><option value=""></option><option>✅ používáme — převzít</option><option>✏️ používáme — změnit</option><option>❌ nepoužíváme — vypustit</option><option>⭐ nové — chceme</option><option>❓ nevím / probrat</option></select></td>
+<td><select class="p" data-k="M05_46_p"><option value=""></option><option>MUST</option><option>SHOULD</option><option>COULD</option><option>WON'T</option></select></td>
+<td><span class="nw"><input class="n" data-k="M05_46_n" placeholder="poznámka / jak změnit (nebo 🎤 diktuj)"><button type="button" class="mic" title="Diktovat (čeština)">🎤</button></span></td></tr>
+<tr data-k="M05_47"><td class="fn">Předplatné — produkty s expirací, online prodej, auto-přidělení dle odjetého času.</td>
+<td><select class="v" data-k="M05_47_v"><option value=""></option><option>✅ používáme — převzít</option><option>✏️ používáme — změnit</option><option>❌ nepoužíváme — vypustit</option><option>⭐ nové — chceme</option><option>❓ nevím / probrat</option></select></td>
+<td><select class="p" data-k="M05_47_p"><option value=""></option><option>MUST</option><option>SHOULD</option><option>COULD</option><option>WON'T</option></select></td>
+<td><span class="nw"><input class="n" data-k="M05_47_n" placeholder="poznámka / jak změnit (nebo 🎤 diktuj)"><button type="button" class="mic" title="Diktovat (čeština)">🎤</button></span></td></tr>
+<tr data-k="M05_48"><td class="fn">GDPR — souhlasy, export dat člena, právo na výmaz (anonymizace se zachováním účetních dokladů), retenční politiky.</td>
+<td><select class="v" data-k="M05_48_v"><option value=""></option><option>✅ používáme — převzít</option><option>✏️ používáme — změnit</option><option>❌ nepoužíváme — vypustit</option><option>⭐ nové — chceme</option><option>❓ nevím / probrat</option></select></td>
+<td><select class="p" data-k="M05_48_p"><option value=""></option><option>MUST</option><option>SHOULD</option><option>COULD</option><option>WON'T</option></select></td>
+<td><span class="nw"><input class="n" data-k="M05_48_n" placeholder="poznámka / jak změnit (nebo 🎤 diktuj)"><button type="button" class="mic" title="Diktovat (čeština)">🎤</button></span></td></tr>
+<tr data-k="M05_49"><td class="fn">Exporty — filtrovatelný export členů (CSV/XLSX), countery v gridu.</td>
+<td><select class="v" data-k="M05_49_v"><option value=""></option><option>✅ používáme — převzít</option><option>✏️ používáme — změnit</option><option>❌ nepoužíváme — vypustit</option><option>⭐ nové — chceme</option><option>❓ nevím / probrat</option></select></td>
+<td><select class="p" data-k="M05_49_p"><option value=""></option><option>MUST</option><option>SHOULD</option><option>COULD</option><option>WON'T</option></select></td>
+<td><span class="nw"><input class="n" data-k="M05_49_n" placeholder="poznámka / jak změnit (nebo 🎤 diktuj)"><button type="button" class="mic" title="Diktovat (čeština)">🎤</button></span></td></tr>
+<tr data-k="M05_50"><td class="fn">Kiosek: dotykový panel, kamera, čtečka karet; POS čtečky (Symbol/Datalogic/Athesi).</td>
+<td><select class="v" data-k="M05_50_v"><option value=""></option><option>✅ používáme — převzít</option><option>✏️ používáme — změnit</option><option>❌ nepoužíváme — vypustit</option><option>⭐ nové — chceme</option><option>❓ nevím / probrat</option></select></td>
+<td><select class="p" data-k="M05_50_p"><option value=""></option><option>MUST</option><option>SHOULD</option><option>COULD</option><option>WON'T</option></select></td>
+<td><span class="nw"><input class="n" data-k="M05_50_n" placeholder="poznámka / jak změnit (nebo 🎤 diktuj)"><button type="button" class="mic" title="Diktovat (čeština)">🎤</button></span></td></tr>
+<tr data-k="M05_51"><td class="fn">D03 kompletní (34 funkcí) vč. FAQ scénářů; challenge mezi členy → F4 (M13).</td>
+<td><select class="v" data-k="M05_51_v"><option value=""></option><option>✅ používáme — převzít</option><option>✏️ používáme — změnit</option><option>❌ nepoužíváme — vypustit</option><option>⭐ nové — chceme</option><option>❓ nevím / probrat</option></select></td>
+<td><select class="p" data-k="M05_51_p"><option value=""></option><option>MUST</option><option>SHOULD</option><option>COULD</option><option>WON'T</option></select></td>
+<td><span class="nw"><input class="n" data-k="M05_51_n" placeholder="poznámka / jak změnit (nebo 🎤 diktuj)"><button type="button" class="mic" title="Diktovat (čeština)">🎤</button></span></td></tr>
+<tr class="mh"><td colspan="4"><b>M06 · Produkty, ceny &amp; sklad</b> <span class="ph">F2</span></td></tr>
+<tr data-k="M06_52"><td class="fn">Katalog — hierarchie rodina → skupina → produkt; typy: jízda (vazba na model stroje + délku/kola), zboží, F&amp;B, voucher, předplatné, balíček (s podprodukty), add-on (extra k hlavnímu produktu), event produkt, narozeninový produkt.</td>
+<td><select class="v" data-k="M06_52_v"><option value=""></option><option>✅ používáme — převzít</option><option>✏️ používáme — změnit</option><option>❌ nepoužíváme — vypustit</option><option>⭐ nové — chceme</option><option>❓ nevím / probrat</option></select></td>
+<td><select class="p" data-k="M06_52_p"><option value=""></option><option>MUST</option><option>SHOULD</option><option>COULD</option><option>WON'T</option></select></td>
+<td><span class="nw"><input class="n" data-k="M06_52_n" placeholder="poznámka / jak změnit (nebo 🎤 diktuj)"><button type="button" class="mic" title="Diktovat (čeština)">🎤</button></span></td></tr>
+<tr data-k="M06_53"><td class="fn">Cenotvorba — více ceníků (pricing modes: default, zaměstnanec, member…), multi-pricing, klesající/množstevní ceny, happy-hour (časová pravidla), kampaňové ceny; produkt v kampani viditelný jen v kampani (jako Apex, ale s explicitní indikací proč není na POS).</td>
+<td><select class="v" data-k="M06_53_v"><option value=""></option><option>✅ používáme — převzít</option><option>✏️ používáme — změnit</option><option>❌ nepoužíváme — vypustit</option><option>⭐ nové — chceme</option><option>❓ nevím / probrat</option></select></td>
+<td><select class="p" data-k="M06_53_p"><option value=""></option><option>MUST</option><option>SHOULD</option><option>COULD</option><option>WON'T</option></select></td>
+<td><span class="nw"><input class="n" data-k="M06_53_n" placeholder="poznámka / jak změnit (nebo 🎤 diktuj)"><button type="button" class="mic" title="Diktovat (čeština)">🎤</button></span></td></tr>
+<tr data-k="M06_54"><td class="fn">Sklad — vazba produkt↔skladová položka, stav zásoby na POS, příjemky/výdejky, inventura, hromadný import z rodiny; napojení na servisní díly (M04) a bar (M11). Realita Pitlandu: sklad se nenaskladňuje → záporné stavy (Gear −3 275…); PitOS: sklad volitelný per kategorie, jinak režim „čítač prodejů&quot; bez záporných alarmů.</td>
+<td><select class="v" data-k="M06_54_v"><option value=""></option><option>✅ používáme — převzít</option><option>✏️ používáme — změnit</option><option>❌ nepoužíváme — vypustit</option><option>⭐ nové — chceme</option><option>❓ nevím / probrat</option></select></td>
+<td><select class="p" data-k="M06_54_p"><option value=""></option><option>MUST</option><option>SHOULD</option><option>COULD</option><option>WON'T</option></select></td>
+<td><span class="nw"><input class="n" data-k="M06_54_n" placeholder="poznámka / jak změnit (nebo 🎤 diktuj)"><button type="button" class="mic" title="Diktovat (čeština)">🎤</button></span></td></tr>
+<tr data-k="M06_55"><td class="fn">Věrnostní produkty — refill peněženky, dobíjení kreditů, dárková karta s částkou do peněženky.</td>
+<td><select class="v" data-k="M06_55_v"><option value=""></option><option>✅ používáme — převzít</option><option>✏️ používáme — změnit</option><option>❌ nepoužíváme — vypustit</option><option>⭐ nové — chceme</option><option>❓ nevím / probrat</option></select></td>
+<td><select class="p" data-k="M06_55_p"><option value=""></option><option>MUST</option><option>SHOULD</option><option>COULD</option><option>WON'T</option></select></td>
+<td><span class="nw"><input class="n" data-k="M06_55_n" placeholder="poznámka / jak změnit (nebo 🎤 diktuj)"><button type="button" class="mic" title="Diktovat (čeština)">🎤</button></span></td></tr>
+<tr data-k="M06_56"><td class="fn">D04 kompletní (19 funkcí).</td>
+<td><select class="v" data-k="M06_56_v"><option value=""></option><option>✅ používáme — převzít</option><option>✏️ používáme — změnit</option><option>❌ nepoužíváme — vypustit</option><option>⭐ nové — chceme</option><option>❓ nevím / probrat</option></select></td>
+<td><select class="p" data-k="M06_56_p"><option value=""></option><option>MUST</option><option>SHOULD</option><option>COULD</option><option>WON'T</option></select></td>
+<td><span class="nw"><input class="n" data-k="M06_56_n" placeholder="poznámka / jak změnit (nebo 🎤 diktuj)"><button type="button" class="mic" title="Diktovat (čeština)">🎤</button></span></td></tr>
+<tr class="mh"><td colspan="4"><b>M07 · Vouchery &amp; vstupenky</b> <span class="ph">F3</span></td></tr>
+<tr data-k="M07_57"><td class="fn">Voucher engine — voucher jako instance produktu s unikátním kódem (QR/EAN); životní cyklus: vydaný → aktivní → uplatněný / expirovaný / ztracený / stornovaný; kampaně (šarže voucherů s pravidly).</td>
+<td><select class="v" data-k="M07_57_v"><option value=""></option><option>✅ používáme — převzít</option><option>✏️ používáme — změnit</option><option>❌ nepoužíváme — vypustit</option><option>⭐ nové — chceme</option><option>❓ nevím / probrat</option></select></td>
+<td><select class="p" data-k="M07_57_p"><option value=""></option><option>MUST</option><option>SHOULD</option><option>COULD</option><option>WON'T</option></select></td>
+<td><span class="nw"><input class="n" data-k="M07_57_n" placeholder="poznámka / jak změnit (nebo 🎤 diktuj)"><button type="button" class="mic" title="Diktovat (čeština)">🎤</button></span></td></tr>
+<tr data-k="M07_58"><td class="fn">Typy — dárkový poukaz (fyzický i e-mailem), firemní/benefitní vouchery (works council) s portálem pro firmy, kreditový voucher (např. „50 kreditů“).</td>
+<td><select class="v" data-k="M07_58_v"><option value=""></option><option>✅ používáme — převzít</option><option>✏️ používáme — změnit</option><option>❌ nepoužíváme — vypustit</option><option>⭐ nové — chceme</option><option>❓ nevím / probrat</option></select></td>
+<td><select class="p" data-k="M07_58_p"><option value=""></option><option>MUST</option><option>SHOULD</option><option>COULD</option><option>WON'T</option></select></td>
+<td><span class="nw"><input class="n" data-k="M07_58_n" placeholder="poznámka / jak změnit (nebo 🎤 diktuj)"><button type="button" class="mic" title="Diktovat (čeština)">🎤</button></span></td></tr>
+<tr data-k="M07_59"><td class="fn">Online prodej — e-shop voucherů (guest mode bez účtu), platba kartou, automatické doručení PDF + e-mail s fakturou a vstupenkami.</td>
+<td><select class="v" data-k="M07_59_v"><option value=""></option><option>✅ používáme — převzít</option><option>✏️ používáme — změnit</option><option>❌ nepoužíváme — vypustit</option><option>⭐ nové — chceme</option><option>❓ nevím / probrat</option></select></td>
+<td><select class="p" data-k="M07_59_p"><option value=""></option><option>MUST</option><option>SHOULD</option><option>COULD</option><option>WON'T</option></select></td>
+<td><span class="nw"><input class="n" data-k="M07_59_n" placeholder="poznámka / jak změnit (nebo 🎤 diktuj)"><button type="button" class="mic" title="Diktovat (čeština)">🎤</button></span></td></tr>
+<tr data-k="M07_60"><td class="fn">Uplatnění — validace skenem na POS, v rezervaci (online i na místě), na kiosku; částečné čerpání u kreditových.</td>
+<td><select class="v" data-k="M07_60_v"><option value=""></option><option>✅ používáme — převzít</option><option>✏️ používáme — změnit</option><option>❌ nepoužíváme — vypustit</option><option>⭐ nové — chceme</option><option>❓ nevím / probrat</option></select></td>
+<td><select class="p" data-k="M07_60_p"><option value=""></option><option>MUST</option><option>SHOULD</option><option>COULD</option><option>WON'T</option></select></td>
+<td><span class="nw"><input class="n" data-k="M07_60_n" placeholder="poznámka / jak změnit (nebo 🎤 diktuj)"><button type="button" class="mic" title="Diktovat (čeština)">🎤</button></span></td></tr>
+<tr data-k="M07_61"><td class="fn">D05 kompletní (11 funkcí) vč. web modulu s Center ID.</td>
+<td><select class="v" data-k="M07_61_v"><option value=""></option><option>✅ používáme — převzít</option><option>✏️ používáme — změnit</option><option>❌ nepoužíváme — vypustit</option><option>⭐ nové — chceme</option><option>❓ nevím / probrat</option></select></td>
+<td><select class="p" data-k="M07_61_p"><option value=""></option><option>MUST</option><option>SHOULD</option><option>COULD</option><option>WON'T</option></select></td>
+<td><span class="nw"><input class="n" data-k="M07_61_n" placeholder="poznámka / jak změnit (nebo 🎤 diktuj)"><button type="button" class="mic" title="Diktovat (čeština)">🎤</button></span></td></tr>
+<tr class="mh"><td colspan="4"><b>M08 · Kalendář &amp; rezervace</b> <span class="ph">F3</span></td></tr>
+<tr data-k="M08_62"><td class="fn">Plánovací kalendář — otevírací doba per trať/aktivita, časové sloty s kapacitou (počet strojů per model), blokace tratě/místnosti/stolu (oslavy), zobrazení obsazenosti; rezervace 2 modelů současně (dospělé + dětské stroje v jednom slotu).</td>
+<td><select class="v" data-k="M08_62_v"><option value=""></option><option>✅ používáme — převzít</option><option>✏️ používáme — změnit</option><option>❌ nepoužíváme — vypustit</option><option>⭐ nové — chceme</option><option>❓ nevím / probrat</option></select></td>
+<td><select class="p" data-k="M08_62_p"><option value=""></option><option>MUST</option><option>SHOULD</option><option>COULD</option><option>WON'T</option></select></td>
+<td><span class="nw"><input class="n" data-k="M08_62_n" placeholder="poznámka / jak změnit (nebo 🎤 diktuj)"><button type="button" class="mic" title="Diktovat (čeština)">🎤</button></span></td></tr>
+<tr data-k="M08_63"><td class="fn">Rezervace na místě / telefonem — rychlé založení z kalendáře, záloha (zálohová faktura, auto-odpočet od finální ceny), multi-aktivita na jedné vstupence, dotazník k rezervaci.</td>
+<td><select class="v" data-k="M08_63_v"><option value=""></option><option>✅ používáme — převzít</option><option>✏️ používáme — změnit</option><option>❌ nepoužíváme — vypustit</option><option>⭐ nové — chceme</option><option>❓ nevím / probrat</option></select></td>
+<td><select class="p" data-k="M08_63_p"><option value=""></option><option>MUST</option><option>SHOULD</option><option>COULD</option><option>WON'T</option></select></td>
+<td><span class="nw"><input class="n" data-k="M08_63_n" placeholder="poznámka / jak změnit (nebo 🎤 diktuj)"><button type="button" class="mic" title="Diktovat (čeština)">🎤</button></span></td></tr>
+<tr data-k="M08_64"><td class="fn">Online rezervace — zákaznický portál: výběr slotu → produkt → platba (karta / peněženka / voucher / dárková vstupenka / kredity / předplatné); guest mode; soukromé i veřejné eventy online; potvrzovací e-mail se storno odkazem.</td>
+<td><select class="v" data-k="M08_64_v"><option value=""></option><option>✅ používáme — převzít</option><option>✏️ používáme — změnit</option><option>❌ nepoužíváme — vypustit</option><option>⭐ nové — chceme</option><option>❓ nevím / probrat</option></select></td>
+<td><select class="p" data-k="M08_64_p"><option value=""></option><option>MUST</option><option>SHOULD</option><option>COULD</option><option>WON'T</option></select></td>
+<td><span class="nw"><input class="n" data-k="M08_64_n" placeholder="poznámka / jak změnit (nebo 🎤 diktuj)"><button type="button" class="mic" title="Diktovat (čeština)">🎤</button></span></td></tr>
+<tr data-k="M08_65"><td class="fn">Napojení na provoz — validace rezervace na POS při příchodu; FastCheckIn kiosek (samoobslužný tisk vstupenky u zaplacené rezervace); automatické předvyplnění session pro maršála (jezdci ze slotu).</td>
+<td><select class="v" data-k="M08_65_v"><option value=""></option><option>✅ používáme — převzít</option><option>✏️ používáme — změnit</option><option>❌ nepoužíváme — vypustit</option><option>⭐ nové — chceme</option><option>❓ nevím / probrat</option></select></td>
+<td><select class="p" data-k="M08_65_p"><option value=""></option><option>MUST</option><option>SHOULD</option><option>COULD</option><option>WON'T</option></select></td>
+<td><span class="nw"><input class="n" data-k="M08_65_n" placeholder="poznámka / jak změnit (nebo 🎤 diktuj)"><button type="button" class="mic" title="Diktovat (čeština)">🎤</button></span></td></tr>
+<tr data-k="M08_66"><td class="fn">No-show scénáře &amp; storno pravidla — uzavření bez refundace / refundace do peněženky / přesun termínu / doúčtování při jiném počtu účastníků — vše jako auditované operace s doklady. ✅ Realita Pitlandu: „PŘESUN TERMÍNU&quot; se dnes prodává jako produkt za 300 Kč — v PitOS nativní storno/změnové poplatky v rezervačních pravidlech, ne produkt-hack.</td>
+<td><select class="v" data-k="M08_66_v"><option value=""></option><option>✅ používáme — převzít</option><option>✏️ používáme — změnit</option><option>❌ nepoužíváme — vypustit</option><option>⭐ nové — chceme</option><option>❓ nevím / probrat</option></select></td>
+<td><select class="p" data-k="M08_66_p"><option value=""></option><option>MUST</option><option>SHOULD</option><option>COULD</option><option>WON'T</option></select></td>
+<td><span class="nw"><input class="n" data-k="M08_66_n" placeholder="poznámka / jak změnit (nebo 🎤 diktuj)"><button type="button" class="mic" title="Diktovat (čeština)">🎤</button></span></td></tr>
+<tr data-k="M08_67"><td class="fn">Tracking — konverzní tagy (GTM, Meta Pixel) na online flow.</td>
+<td><select class="v" data-k="M08_67_v"><option value=""></option><option>✅ používáme — převzít</option><option>✏️ používáme — změnit</option><option>❌ nepoužíváme — vypustit</option><option>⭐ nové — chceme</option><option>❓ nevím / probrat</option></select></td>
+<td><select class="p" data-k="M08_67_p"><option value=""></option><option>MUST</option><option>SHOULD</option><option>COULD</option><option>WON'T</option></select></td>
+<td><span class="nw"><input class="n" data-k="M08_67_n" placeholder="poznámka / jak změnit (nebo 🎤 diktuj)"><button type="button" class="mic" title="Diktovat (čeština)">🎤</button></span></td></tr>
+<tr data-k="M08_68"><td class="fn">D06 kompletní (29 funkcí vč. case studies).</td>
+<td><select class="v" data-k="M08_68_v"><option value=""></option><option>✅ používáme — převzít</option><option>✏️ používáme — změnit</option><option>❌ nepoužíváme — vypustit</option><option>⭐ nové — chceme</option><option>❓ nevím / probrat</option></select></td>
+<td><select class="p" data-k="M08_68_p"><option value=""></option><option>MUST</option><option>SHOULD</option><option>COULD</option><option>WON'T</option></select></td>
+<td><span class="nw"><input class="n" data-k="M08_68_n" placeholder="poznámka / jak změnit (nebo 🎤 diktuj)"><button type="button" class="mic" title="Diktovat (čeština)">🎤</button></span></td></tr>
+<tr class="mh"><td colspan="4"><b>M09 · Pokladna POS</b> <span class="ph">F2</span></td></tr>
+<tr data-k="M09_69"><td class="fn">Prodejní obrazovka — dotyková mřížka produktů dle rodin/skupin, sklad na dlaždici, add-ony, balíčky, cenové režimy dle kategorie osoby, slevy (právem řízené), spropitné.</td>
+<td><select class="v" data-k="M09_69_v"><option value=""></option><option>✅ používáme — převzít</option><option>✏️ používáme — změnit</option><option>❌ nepoužíváme — vypustit</option><option>⭐ nové — chceme</option><option>❓ nevím / probrat</option></select></td>
+<td><select class="p" data-k="M09_69_p"><option value=""></option><option>MUST</option><option>SHOULD</option><option>COULD</option><option>WON'T</option></select></td>
+<td><span class="nw"><input class="n" data-k="M09_69_n" placeholder="poznámka / jak změnit (nebo 🎤 diktuj)"><button type="button" class="mic" title="Diktovat (čeština)">🎤</button></span></td></tr>
+<tr data-k="M09_70"><td class="fn">Prodej jízdy = zápis do session — klíčový tok: prodej produktu jízdy rovnou vloží jezdce do zvolené session (walk-in) nebo spáruje s rezervací; sken členské karty → produkty → session(s) → OK; prodej eventových produktů (drivers/teams).</td>
+<td><select class="v" data-k="M09_70_v"><option value=""></option><option>✅ používáme — převzít</option><option>✏️ používáme — změnit</option><option>❌ nepoužíváme — vypustit</option><option>⭐ nové — chceme</option><option>❓ nevím / probrat</option></select></td>
+<td><select class="p" data-k="M09_70_p"><option value=""></option><option>MUST</option><option>SHOULD</option><option>COULD</option><option>WON'T</option></select></td>
+<td><span class="nw"><input class="n" data-k="M09_70_n" placeholder="poznámka / jak změnit (nebo 🎤 diktuj)"><button type="button" class="mic" title="Diktovat (čeština)">🎤</button></span></td></tr>
+<tr data-k="M09_71"><td class="fn">Platby — hotovost (zásuvka přes tiskárnu), platební terminál (adaptér dle dodavatele), peněženka člena, kredity, voucher, více měn, kombinované platby, převod na účet zákazníka (B2B), transakční poplatky per typ platby.</td>
+<td><select class="v" data-k="M09_71_v"><option value=""></option><option>✅ používáme — převzít</option><option>✏️ používáme — změnit</option><option>❌ nepoužíváme — vypustit</option><option>⭐ nové — chceme</option><option>❓ nevím / probrat</option></select></td>
+<td><select class="p" data-k="M09_71_p"><option value=""></option><option>MUST</option><option>SHOULD</option><option>COULD</option><option>WON'T</option></select></td>
+<td><span class="nw"><input class="n" data-k="M09_71_n" placeholder="poznámka / jak změnit (nebo 🎤 diktuj)"><button type="button" class="mic" title="Diktovat (čeština)">🎤</button></span></td></tr>
+<tr data-k="M09_72"><td class="fn">Účty — split účtenky, odložené účty (hold) a jejich slučování, přiřazení účtenky zákazníkovi i zpětně po uzávěrce, přiřazení k rezervaci.</td>
+<td><select class="v" data-k="M09_72_v"><option value=""></option><option>✅ používáme — převzít</option><option>✏️ používáme — změnit</option><option>❌ nepoužíváme — vypustit</option><option>⭐ nové — chceme</option><option>❓ nevím / probrat</option></select></td>
+<td><select class="p" data-k="M09_72_p"><option value=""></option><option>MUST</option><option>SHOULD</option><option>COULD</option><option>WON'T</option></select></td>
+<td><span class="nw"><input class="n" data-k="M09_72_n" placeholder="poznámka / jak změnit (nebo 🎤 diktuj)"><button type="button" class="mic" title="Diktovat (čeština)">🎤</button></span></td></tr>
+<tr data-k="M09_73"><td class="fn">Storna &amp; refundace — účtenka po validaci zamčená; opravy jen dobropisem; vracení jízdy ze session (pravý klik na jezdce), vracení aktivity z kalendáře (rozdíl počtu účastníků), kombinované vrácení (session + zboží); právy řízené.</td>
+<td><select class="v" data-k="M09_73_v"><option value=""></option><option>✅ používáme — převzít</option><option>✏️ používáme — změnit</option><option>❌ nepoužíváme — vypustit</option><option>⭐ nové — chceme</option><option>❓ nevím / probrat</option></select></td>
+<td><select class="p" data-k="M09_73_p"><option value=""></option><option>MUST</option><option>SHOULD</option><option>COULD</option><option>WON'T</option></select></td>
+<td><span class="nw"><input class="n" data-k="M09_73_n" placeholder="poznámka / jak změnit (nebo 🎤 diktuj)"><button type="button" class="mic" title="Diktovat (čeština)">🎤</button></span></td></tr>
+<tr data-k="M09_74"><td class="fn">Uzávěrka — denní uzávěrka pokladny, korekce typů plateb před uzávěrkou, doklad o platbě (dnes/včera), reprint.</td>
+<td><select class="v" data-k="M09_74_v"><option value=""></option><option>✅ používáme — převzít</option><option>✏️ používáme — změnit</option><option>❌ nepoužíváme — vypustit</option><option>⭐ nové — chceme</option><option>❓ nevím / probrat</option></select></td>
+<td><select class="p" data-k="M09_74_p"><option value=""></option><option>MUST</option><option>SHOULD</option><option>COULD</option><option>WON'T</option></select></td>
+<td><span class="nw"><input class="n" data-k="M09_74_n" placeholder="poznámka / jak změnit (nebo 🎤 diktuj)"><button type="button" class="mic" title="Diktovat (čeština)">🎤</button></span></td></tr>
+<tr data-k="M09_75"><td class="fn">School mode — plnohodnotné školicí prostředí nad kopií dat, transakce mimo ostrá data, výrazná vizuální indikace.</td>
+<td><select class="v" data-k="M09_75_v"><option value=""></option><option>✅ používáme — převzít</option><option>✏️ používáme — změnit</option><option>❌ nepoužíváme — vypustit</option><option>⭐ nové — chceme</option><option>❓ nevím / probrat</option></select></td>
+<td><select class="p" data-k="M09_75_p"><option value=""></option><option>MUST</option><option>SHOULD</option><option>COULD</option><option>WON'T</option></select></td>
+<td><span class="nw"><input class="n" data-k="M09_75_n" placeholder="poznámka / jak změnit (nebo 🎤 diktuj)"><button type="button" class="mic" title="Diktovat (čeština)">🎤</button></span></td></tr>
+<tr data-k="M09_76"><td class="fn">DPH &amp; náležitosti ČR — sazby DPH, ceny s/bez DPH, náležitosti zjednodušeného daňového dokladu, zaokrouhlování.</td>
+<td><select class="v" data-k="M09_76_v"><option value=""></option><option>✅ používáme — převzít</option><option>✏️ používáme — změnit</option><option>❌ nepoužíváme — vypustit</option><option>⭐ nové — chceme</option><option>❓ nevím / probrat</option></select></td>
+<td><select class="p" data-k="M09_76_p"><option value=""></option><option>MUST</option><option>SHOULD</option><option>COULD</option><option>WON'T</option></select></td>
+<td><span class="nw"><input class="n" data-k="M09_76_n" placeholder="poznámka / jak změnit (nebo 🎤 diktuj)"><button type="button" class="mic" title="Diktovat (čeština)">🎤</button></span></td></tr>
+<tr data-k="M09_77"><td class="fn">EPSON TM-T88 (ESC/POS) přes print agent, pokladní zásuvka přes tiskárnu, čtečky kódů, zákaznický displej, platební terminál (Q4).</td>
+<td><select class="v" data-k="M09_77_v"><option value=""></option><option>✅ používáme — převzít</option><option>✏️ používáme — změnit</option><option>❌ nepoužíváme — vypustit</option><option>⭐ nové — chceme</option><option>❓ nevím / probrat</option></select></td>
+<td><select class="p" data-k="M09_77_p"><option value=""></option><option>MUST</option><option>SHOULD</option><option>COULD</option><option>WON'T</option></select></td>
+<td><span class="nw"><input class="n" data-k="M09_77_n" placeholder="poznámka / jak změnit (nebo 🎤 diktuj)"><button type="button" class="mic" title="Diktovat (čeština)">🎤</button></span></td></tr>
+<tr data-k="M09_78"><td class="fn">Dvě rodiny katalogu: Kč a Kredity — kreditní produkty mají dvojí cenu (Kč + kredit, 1 C ≈ 1 Kč). PitOS: jeden produkt s více cenovými dimenzemi místo duplicitního katalogu.</td>
+<td><select class="v" data-k="M09_78_v"><option value=""></option><option>✅ používáme — převzít</option><option>✏️ používáme — změnit</option><option>❌ nepoužíváme — vypustit</option><option>⭐ nové — chceme</option><option>❓ nevím / probrat</option></select></td>
+<td><select class="p" data-k="M09_78_p"><option value=""></option><option>MUST</option><option>SHOULD</option><option>COULD</option><option>WON'T</option></select></td>
+<td><span class="nw"><input class="n" data-k="M09_78_n" placeholder="poznámka / jak změnit (nebo 🎤 diktuj)"><button type="button" class="mic" title="Diktovat (čeština)">🎤</button></span></td></tr>
+<tr data-k="M09_79"><td class="fn">Oddělené řady: „Doklad&quot; (peníze) vs „Transakce&quot; (čistě kreditní pohyb, 0 Kč) — 14 214 záznamů; sloupce obsluha/člen/status/pokladna/celkem/k úhradě/platba (KRE = karta, HOT = hotovost, kombinace).</td>
+<td><select class="v" data-k="M09_79_v"><option value=""></option><option>✅ používáme — převzít</option><option>✏️ používáme — změnit</option><option>❌ nepoužíváme — vypustit</option><option>⭐ nové — chceme</option><option>❓ nevím / probrat</option></select></td>
+<td><select class="p" data-k="M09_79_p"><option value=""></option><option>MUST</option><option>SHOULD</option><option>COULD</option><option>WON'T</option></select></td>
+<td><span class="nw"><input class="n" data-k="M09_79_n" placeholder="poznámka / jak změnit (nebo 🎤 diktuj)"><button type="button" class="mic" title="Diktovat (čeština)">🎤</button></span></td></tr>
+<tr data-k="M09_80"><td class="fn">Produkty vázané na mapy — VJ mapa 2/mapa 3, UPGRADE na mapu 3, prodloužení per mapa → přímý most produkt → varianta tratě → speed-profil (M02).</td>
+<td><select class="v" data-k="M09_80_v"><option value=""></option><option>✅ používáme — převzít</option><option>✏️ používáme — změnit</option><option>❌ nepoužíváme — vypustit</option><option>⭐ nové — chceme</option><option>❓ nevím / probrat</option></select></td>
+<td><select class="p" data-k="M09_80_p"><option value=""></option><option>MUST</option><option>SHOULD</option><option>COULD</option><option>WON'T</option></select></td>
+<td><span class="nw"><input class="n" data-k="M09_80_n" placeholder="poznámka / jak změnit (nebo 🎤 diktuj)"><button type="button" class="mic" title="Diktovat (čeština)">🎤</button></span></td></tr>
+<tr data-k="M09_81"><td class="fn">„PŘESUN TERMÍNU&quot; za 300 Kč jako produkt = workaround za chybějící storno pravidla → v PitOS řešit v rezervacích (M08) jako storno/změnové poplatky.</td>
+<td><select class="v" data-k="M09_81_v"><option value=""></option><option>✅ používáme — převzít</option><option>✏️ používáme — změnit</option><option>❌ nepoužíváme — vypustit</option><option>⭐ nové — chceme</option><option>❓ nevím / probrat</option></select></td>
+<td><select class="p" data-k="M09_81_p"><option value=""></option><option>MUST</option><option>SHOULD</option><option>COULD</option><option>WON'T</option></select></td>
+<td><span class="nw"><input class="n" data-k="M09_81_n" placeholder="poznámka / jak změnit (nebo 🎤 diktuj)"><button type="button" class="mic" title="Diktovat (čeština)">🎤</button></span></td></tr>
+<tr data-k="M09_82"><td class="fn">Denní report: přehled prodejů/plateb/DPH 21 % podle rodin a produktů; Informační panel drží „neuložená&quot; data do uzávěrky per pokladna.</td>
+<td><select class="v" data-k="M09_82_v"><option value=""></option><option>✅ používáme — převzít</option><option>✏️ používáme — změnit</option><option>❌ nepoužíváme — vypustit</option><option>⭐ nové — chceme</option><option>❓ nevím / probrat</option></select></td>
+<td><select class="p" data-k="M09_82_p"><option value=""></option><option>MUST</option><option>SHOULD</option><option>COULD</option><option>WON'T</option></select></td>
+<td><span class="nw"><input class="n" data-k="M09_82_n" placeholder="poznámka / jak změnit (nebo 🎤 diktuj)"><button type="button" class="mic" title="Diktovat (čeština)">🎤</button></span></td></tr>
+<tr data-k="M09_83"><td class="fn">Statistiky sessions se „skrytými průjezdy&quot; — průjezdy mimo aktivní časomíru se evidují vždy (potvrzuje návrh Passing nezávislý na session).</td>
+<td><select class="v" data-k="M09_83_v"><option value=""></option><option>✅ používáme — převzít</option><option>✏️ používáme — změnit</option><option>❌ nepoužíváme — vypustit</option><option>⭐ nové — chceme</option><option>❓ nevím / probrat</option></select></td>
+<td><select class="p" data-k="M09_83_p"><option value=""></option><option>MUST</option><option>SHOULD</option><option>COULD</option><option>WON'T</option></select></td>
+<td><span class="nw"><input class="n" data-k="M09_83_n" placeholder="poznámka / jak změnit (nebo 🎤 diktuj)"><button type="button" class="mic" title="Diktovat (čeština)">🎤</button></span></td></tr>
+<tr data-k="M09_84"><td class="fn">D07 kompletní (32 funkcí); EPT protokoly nahrazeny adaptérem pro reálný terminál.</td>
+<td><select class="v" data-k="M09_84_v"><option value=""></option><option>✅ používáme — převzít</option><option>✏️ používáme — změnit</option><option>❌ nepoužíváme — vypustit</option><option>⭐ nové — chceme</option><option>❓ nevím / probrat</option></select></td>
+<td><select class="p" data-k="M09_84_p"><option value=""></option><option>MUST</option><option>SHOULD</option><option>COULD</option><option>WON'T</option></select></td>
+<td><span class="nw"><input class="n" data-k="M09_84_n" placeholder="poznámka / jak změnit (nebo 🎤 diktuj)"><button type="button" class="mic" title="Diktovat (čeština)">🎤</button></span></td></tr>
+<tr class="mh"><td colspan="4"><b>M10 · Doklady &amp; účetnictví</b> <span class="ph">F3</span></td></tr>
+<tr data-k="M10_85"><td class="fn">Doklady — nabídka (se stavy), zálohová faktura + vrácení zálohy, faktura (i z účtenky, i z nabídky), dobropis (3 cesty vzniku: ručně / k webové platbě / stornem faktury), doklad o záloze; číselné řady, náležitosti dle ČR.</td>
+<td><select class="v" data-k="M10_85_v"><option value=""></option><option>✅ používáme — převzít</option><option>✏️ používáme — změnit</option><option>❌ nepoužíváme — vypustit</option><option>⭐ nové — chceme</option><option>❓ nevím / probrat</option></select></td>
+<td><select class="p" data-k="M10_85_p"><option value=""></option><option>MUST</option><option>SHOULD</option><option>COULD</option><option>WON'T</option></select></td>
+<td><span class="nw"><input class="n" data-k="M10_85_n" placeholder="poznámka / jak změnit (nebo 🎤 diktuj)"><button type="button" class="mic" title="Diktovat (čeština)">🎤</button></span></td></tr>
+<tr data-k="M10_86"><td class="fn">Šablony — šablony dokladů (PDF) a e-mailové šablony pro odesílání; branding.</td>
+<td><select class="v" data-k="M10_86_v"><option value=""></option><option>✅ používáme — převzít</option><option>✏️ používáme — změnit</option><option>❌ nepoužíváme — vypustit</option><option>⭐ nové — chceme</option><option>❓ nevím / probrat</option></select></td>
+<td><select class="p" data-k="M10_86_p"><option value=""></option><option>MUST</option><option>SHOULD</option><option>COULD</option><option>WON'T</option></select></td>
+<td><span class="nw"><input class="n" data-k="M10_86_n" placeholder="poznámka / jak změnit (nebo 🎤 diktuj)"><button type="button" class="mic" title="Diktovat (čeština)">🎤</button></span></td></tr>
+<tr data-k="M10_87"><td class="fn">Úhrady — párování plateb na doklady, přehled neuhrazených, upomínky.</td>
+<td><select class="v" data-k="M10_87_v"><option value=""></option><option>✅ používáme — převzít</option><option>✏️ používáme — změnit</option><option>❌ nepoužíváme — vypustit</option><option>⭐ nové — chceme</option><option>❓ nevím / probrat</option></select></td>
+<td><select class="p" data-k="M10_87_p"><option value=""></option><option>MUST</option><option>SHOULD</option><option>COULD</option><option>WON'T</option></select></td>
+<td><span class="nw"><input class="n" data-k="M10_87_n" placeholder="poznámka / jak změnit (nebo 🎤 diktuj)"><button type="button" class="mic" title="Diktovat (čeština)">🎤</button></span></td></tr>
+<tr data-k="M10_88"><td class="fn">Účetní export — mapování na účtovou osnovu, export pro český účetní SW (Pohoda XML / Money / ABRA — dle Q5), ISDOC faktury, export dokladů do XLSX.</td>
+<td><select class="v" data-k="M10_88_v"><option value=""></option><option>✅ používáme — převzít</option><option>✏️ používáme — změnit</option><option>❌ nepoužíváme — vypustit</option><option>⭐ nové — chceme</option><option>❓ nevím / probrat</option></select></td>
+<td><select class="p" data-k="M10_88_p"><option value=""></option><option>MUST</option><option>SHOULD</option><option>COULD</option><option>WON'T</option></select></td>
+<td><span class="nw"><input class="n" data-k="M10_88_n" placeholder="poznámka / jak změnit (nebo 🎤 diktuj)"><button type="button" class="mic" title="Diktovat (čeština)">🎤</button></span></td></tr>
+<tr data-k="M10_89"><td class="fn">Online platby — webhooky platební brány (Stripe/Comgate), automatické párování, čistší model než Apexí „web nákup = dobropis + úhrada“.</td>
+<td><select class="v" data-k="M10_89_v"><option value=""></option><option>✅ používáme — převzít</option><option>✏️ používáme — změnit</option><option>❌ nepoužíváme — vypustit</option><option>⭐ nové — chceme</option><option>❓ nevím / probrat</option></select></td>
+<td><select class="p" data-k="M10_89_p"><option value=""></option><option>MUST</option><option>SHOULD</option><option>COULD</option><option>WON'T</option></select></td>
+<td><span class="nw"><input class="n" data-k="M10_89_n" placeholder="poznámka / jak změnit (nebo 🎤 diktuj)"><button type="button" class="mic" title="Diktovat (čeština)">🎤</button></span></td></tr>
+<tr data-k="M10_90"><td class="fn">D08 kompletní (22 funkcí), bez NF525.</td>
+<td><select class="v" data-k="M10_90_v"><option value=""></option><option>✅ používáme — převzít</option><option>✏️ používáme — změnit</option><option>❌ nepoužíváme — vypustit</option><option>⭐ nové — chceme</option><option>❓ nevím / probrat</option></select></td>
+<td><select class="p" data-k="M10_90_p"><option value=""></option><option>MUST</option><option>SHOULD</option><option>COULD</option><option>WON'T</option></select></td>
+<td><span class="nw"><input class="n" data-k="M10_90_n" placeholder="poznámka / jak změnit (nebo 🎤 diktuj)"><button type="button" class="mic" title="Diktovat (čeština)">🎤</button></span></td></tr>
+<tr class="mh"><td colspan="4"><b>M11 · F&amp;B objednávky (bar)</b> <span class="ph">F4</span></td></tr>
+<tr data-k="M11_91"><td class="fn">Plán stolů — grafický editor zón a stolů (drag&amp;drop, import/export JSON), stavy stolů.</td>
+<td><select class="v" data-k="M11_91_v"><option value=""></option><option>✅ používáme — převzít</option><option>✏️ používáme — změnit</option><option>❌ nepoužíváme — vypustit</option><option>⭐ nové — chceme</option><option>❓ nevím / probrat</option></select></td>
+<td><select class="p" data-k="M11_91_p"><option value=""></option><option>MUST</option><option>SHOULD</option><option>COULD</option><option>WON'T</option></select></td>
+<td><span class="nw"><input class="n" data-k="M11_91_n" placeholder="poznámka / jak změnit (nebo 🎤 diktuj)"><button type="button" class="mic" title="Diktovat (čeština)">🎤</button></span></td></tr>
+<tr data-k="M11_92"><td class="fn">3 režimy objednávání — zákazník přes QR na stole (menu → košík → platba online/na účet stolu), číšník na mobilu (PWA, řízení chodů NEXT / „call on“), samoobslužný tablet s platbou.</td>
+<td><select class="v" data-k="M11_92_v"><option value=""></option><option>✅ používáme — převzít</option><option>✏️ používáme — změnit</option><option>❌ nepoužíváme — vypustit</option><option>⭐ nové — chceme</option><option>❓ nevím / probrat</option></select></td>
+<td><select class="p" data-k="M11_92_p"><option value=""></option><option>MUST</option><option>SHOULD</option><option>COULD</option><option>WON'T</option></select></td>
+<td><span class="nw"><input class="n" data-k="M11_92_n" placeholder="poznámka / jak změnit (nebo 🎤 diktuj)"><button type="button" class="mic" title="Diktovat (čeština)">🎤</button></span></td></tr>
+<tr data-k="M11_93"><td class="fn">Bonování — tisk objednávek na bar/kuchyň tiskárny dle kategorie produktu (printer routing), stav vyřízení.</td>
+<td><select class="v" data-k="M11_93_v"><option value=""></option><option>✅ používáme — převzít</option><option>✏️ používáme — změnit</option><option>❌ nepoužíváme — vypustit</option><option>⭐ nové — chceme</option><option>❓ nevím / probrat</option></select></td>
+<td><select class="p" data-k="M11_93_p"><option value=""></option><option>MUST</option><option>SHOULD</option><option>COULD</option><option>WON'T</option></select></td>
+<td><span class="nw"><input class="n" data-k="M11_93_n" placeholder="poznámka / jak změnit (nebo 🎤 diktuj)"><button type="button" class="mic" title="Diktovat (čeština)">🎤</button></span></td></tr>
+<tr data-k="M11_94"><td class="fn">Sdílený katalog — produkty a sklad z M06, viditelnost per režim (customer/bartender), účtování přes M09.</td>
+<td><select class="v" data-k="M11_94_v"><option value=""></option><option>✅ používáme — převzít</option><option>✏️ používáme — změnit</option><option>❌ nepoužíváme — vypustit</option><option>⭐ nové — chceme</option><option>❓ nevím / probrat</option></select></td>
+<td><select class="p" data-k="M11_94_p"><option value=""></option><option>MUST</option><option>SHOULD</option><option>COULD</option><option>WON'T</option></select></td>
+<td><span class="nw"><input class="n" data-k="M11_94_n" placeholder="poznámka / jak změnit (nebo 🎤 diktuj)"><button type="button" class="mic" title="Diktovat (čeština)">🎤</button></span></td></tr>
+<tr data-k="M11_95"><td class="fn">D10 kompletní (10 funkcí) + BarDistribution z D07.</td>
+<td><select class="v" data-k="M11_95_v"><option value=""></option><option>✅ používáme — převzít</option><option>✏️ používáme — změnit</option><option>❌ nepoužíváme — vypustit</option><option>⭐ nové — chceme</option><option>❓ nevím / probrat</option></select></td>
+<td><select class="p" data-k="M11_95_p"><option value=""></option><option>MUST</option><option>SHOULD</option><option>COULD</option><option>WON'T</option></select></td>
+<td><span class="nw"><input class="n" data-k="M11_95_n" placeholder="poznámka / jak změnit (nebo 🎤 diktuj)"><button type="button" class="mic" title="Diktovat (čeština)">🎤</button></span></td></tr>
+<tr class="mh"><td colspan="4"><b>M12 · Obrazovky &amp; live timing</b> <span class="ph">F1</span></td></tr>
+<tr data-k="M12_96"><td class="fn">TV displeje — fullscreen web na mini PC / Android TV stick; layouty: živé pořadí session, výsledky poslední rozjížďky, nástup další session (jména + čísla strojů), reklamní spoty mezi sessions, úroveň členů; centrální správa pozic („co která TV ukazuje“); auto-reconnect, cache.</td>
+<td><select class="v" data-k="M12_96_v"><option value=""></option><option>✅ používáme — převzít</option><option>✏️ používáme — změnit</option><option>❌ nepoužíváme — vypustit</option><option>⭐ nové — chceme</option><option>❓ nevím / probrat</option></select></td>
+<td><select class="p" data-k="M12_96_p"><option value=""></option><option>MUST</option><option>SHOULD</option><option>COULD</option><option>WON'T</option></select></td>
+<td><span class="nw"><input class="n" data-k="M12_96_n" placeholder="poznámka / jak změnit (nebo 🎤 diktuj)"><button type="button" class="mic" title="Diktovat (čeština)">🎤</button></span></td></tr>
+<tr data-k="M12_97"><td class="fn">Veřejný live timing — web s živými časy (WebSocket ze streamu událostí), branding/logo, historie sessions, výsledky e-mailem/QR po jízdě.</td>
+<td><select class="v" data-k="M12_97_v"><option value=""></option><option>✅ používáme — převzít</option><option>✏️ používáme — změnit</option><option>❌ nepoužíváme — vypustit</option><option>⭐ nové — chceme</option><option>❓ nevím / probrat</option></select></td>
+<td><select class="p" data-k="M12_97_p"><option value=""></option><option>MUST</option><option>SHOULD</option><option>COULD</option><option>WON'T</option></select></td>
+<td><span class="nw"><input class="n" data-k="M12_97_n" placeholder="poznámka / jak změnit (nebo 🎤 diktuj)"><button type="button" class="mic" title="Diktovat (čeština)">🎤</button></span></td></tr>
+<tr data-k="M12_98"><td class="fn">Live tracking (volitelně F4) — pozice jezdců na mapě trati interpolovaná z průjezdů smyčkami; definice trati + pozic smyček v editoru; při nasazení UWB (F4+) plnohodnotný bird&#x27;s-eye view ~30 cm + sektorové heatmapy.</td>
+<td><select class="v" data-k="M12_98_v"><option value=""></option><option>✅ používáme — převzít</option><option>✏️ používáme — změnit</option><option>❌ nepoužíváme — vypustit</option><option>⭐ nové — chceme</option><option>❓ nevím / probrat</option></select></td>
+<td><select class="p" data-k="M12_98_p"><option value=""></option><option>MUST</option><option>SHOULD</option><option>COULD</option><option>WON'T</option></select></td>
+<td><span class="nw"><input class="n" data-k="M12_98_n" placeholder="poznámka / jak změnit (nebo 🎤 diktuj)"><button type="button" class="mic" title="Diktovat (čeština)">🎤</button></span></td></tr>
+<tr data-k="M12_99"><td class="fn">D11 GoTV + GoLive (6 funkcí).</td>
+<td><select class="v" data-k="M12_99_v"><option value=""></option><option>✅ používáme — převzít</option><option>✏️ používáme — změnit</option><option>❌ nepoužíváme — vypustit</option><option>⭐ nové — chceme</option><option>❓ nevím / probrat</option></select></td>
+<td><select class="p" data-k="M12_99_p"><option value=""></option><option>MUST</option><option>SHOULD</option><option>COULD</option><option>WON'T</option></select></td>
+<td><span class="nw"><input class="n" data-k="M12_99_n" placeholder="poznámka / jak změnit (nebo 🎤 diktuj)"><button type="button" class="mic" title="Diktovat (čeština)">🎤</button></span></td></tr>
+<tr class="mh"><td colspan="4"><b>M13 · Komunikace &amp; marketing</b> <span class="ph">F4</span></td></tr>
+<tr data-k="M13_100"><td class="fn">Trigger systém — jednotné triggery (registrace, první jízda, rezervace potvrzena/zrušena, narozeniny, X dní neaktivní, nový osobní rekord…) → akce: e-mail / web push; filtry segmentace.</td>
+<td><select class="v" data-k="M13_100_v"><option value=""></option><option>✅ používáme — převzít</option><option>✏️ používáme — změnit</option><option>❌ nepoužíváme — vypustit</option><option>⭐ nové — chceme</option><option>❓ nevím / probrat</option></select></td>
+<td><select class="p" data-k="M13_100_p"><option value=""></option><option>MUST</option><option>SHOULD</option><option>COULD</option><option>WON'T</option></select></td>
+<td><span class="nw"><input class="n" data-k="M13_100_n" placeholder="poznámka / jak změnit (nebo 🎤 diktuj)"><button type="button" class="mic" title="Diktovat (čeština)">🎤</button></span></td></tr>
+<tr data-k="M13_101"><td class="fn">Transakční e-maily — potvrzení rezervace (se storno linkem), výsledky jízdy, doklady; šablony s proměnnými.</td>
+<td><select class="v" data-k="M13_101_v"><option value=""></option><option>✅ používáme — převzít</option><option>✏️ používáme — změnit</option><option>❌ nepoužíváme — vypustit</option><option>⭐ nové — chceme</option><option>❓ nevím / probrat</option></select></td>
+<td><select class="p" data-k="M13_101_p"><option value=""></option><option>MUST</option><option>SHOULD</option><option>COULD</option><option>WON'T</option></select></td>
+<td><span class="nw"><input class="n" data-k="M13_101_n" placeholder="poznámka / jak změnit (nebo 🎤 diktuj)"><button type="button" class="mic" title="Diktovat (čeština)">🎤</button></span></td></tr>
+<tr data-k="M13_102"><td class="fn">Kampaně — jednoduchý builder (bloky), hromadná rozesílka přes transakční službu (Resend/Postmark/SES), správa souhlasů a odhlášení, doručitelnost (SPF/DKIM/DMARC); skupinový e-mail účastníkům rezervací z kalendáře.</td>
+<td><select class="v" data-k="M13_102_v"><option value=""></option><option>✅ používáme — převzít</option><option>✏️ používáme — změnit</option><option>❌ nepoužíváme — vypustit</option><option>⭐ nové — chceme</option><option>❓ nevím / probrat</option></select></td>
+<td><select class="p" data-k="M13_102_p"><option value=""></option><option>MUST</option><option>SHOULD</option><option>COULD</option><option>WON'T</option></select></td>
+<td><span class="nw"><input class="n" data-k="M13_102_n" placeholder="poznámka / jak změnit (nebo 🎤 diktuj)"><button type="button" class="mic" title="Diktovat (čeština)">🎤</button></span></td></tr>
+<tr data-k="M13_103"><td class="fn">Zákaznická PWA — profil, historie časů a rekordy, virtuální karta (QR), rezervace, push notifikace, challenge mezi členy; instalovatelná, bez app store.</td>
+<td><select class="v" data-k="M13_103_v"><option value=""></option><option>✅ používáme — převzít</option><option>✏️ používáme — změnit</option><option>❌ nepoužíváme — vypustit</option><option>⭐ nové — chceme</option><option>❓ nevím / probrat</option></select></td>
+<td><select class="p" data-k="M13_103_p"><option value=""></option><option>MUST</option><option>SHOULD</option><option>COULD</option><option>WON'T</option></select></td>
+<td><span class="nw"><input class="n" data-k="M13_103_n" placeholder="poznámka / jak změnit (nebo 🎤 diktuj)"><button type="button" class="mic" title="Diktovat (čeština)">🎤</button></span></td></tr>
+<tr data-k="M13_104"><td class="fn">D11 mobilní app + auto email + emailing (16 funkcí) + D03 challenges; Apple Developer agenda odpadá.</td>
+<td><select class="v" data-k="M13_104_v"><option value=""></option><option>✅ používáme — převzít</option><option>✏️ používáme — změnit</option><option>❌ nepoužíváme — vypustit</option><option>⭐ nové — chceme</option><option>❓ nevím / probrat</option></select></td>
+<td><select class="p" data-k="M13_104_p"><option value=""></option><option>MUST</option><option>SHOULD</option><option>COULD</option><option>WON'T</option></select></td>
+<td><span class="nw"><input class="n" data-k="M13_104_n" placeholder="poznámka / jak změnit (nebo 🎤 diktuj)"><button type="button" class="mic" title="Diktovat (čeština)">🎤</button></span></td></tr>
+<tr class="mh"><td colspan="4"><b>M14 · Reporting &amp; dashboardy</b> <span class="ph">F4</span></td></tr>
+<tr data-k="M14_105"><td class="fn">Provozní dashboard — realtime: dnešní tržby, obsazenost slotů, vytížení strojů, fronta sessions.</td>
+<td><select class="v" data-k="M14_105_v"><option value=""></option><option>✅ používáme — převzít</option><option>✏️ používáme — změnit</option><option>❌ nepoužíváme — vypustit</option><option>⭐ nové — chceme</option><option>❓ nevím / probrat</option></select></td>
+<td><select class="p" data-k="M14_105_p"><option value=""></option><option>MUST</option><option>SHOULD</option><option>COULD</option><option>WON'T</option></select></td>
+<td><span class="nw"><input class="n" data-k="M14_105_n" placeholder="poznámka / jak změnit (nebo 🎤 diktuj)"><button type="button" class="mic" title="Diktovat (čeština)">🎤</button></span></td></tr>
+<tr data-k="M14_106"><td class="fn">Prodejní report — souhrn prodejů / vyloučené prodeje / souhrn plateb / pohyby peněženek a counterů; vysvětlený rozdíl prodeje vs. platby (B2B faktury); skládací šablony reportů.</td>
+<td><select class="v" data-k="M14_106_v"><option value=""></option><option>✅ používáme — převzít</option><option>✏️ používáme — změnit</option><option>❌ nepoužíváme — vypustit</option><option>⭐ nové — chceme</option><option>❓ nevím / probrat</option></select></td>
+<td><select class="p" data-k="M14_106_p"><option value=""></option><option>MUST</option><option>SHOULD</option><option>COULD</option><option>WON'T</option></select></td>
+<td><span class="nw"><input class="n" data-k="M14_106_n" placeholder="poznámka / jak změnit (nebo 🎤 diktuj)"><button type="button" class="mic" title="Diktovat (čeština)">🎤</button></span></td></tr>
+<tr data-k="M14_107"><td class="fn">✅ Parita s reálně používanými reporty Apexu — Denní report (prodeje/platby/DPH dle rodin a produktů), Statistiky sessions (jízdy dne + skryté průjezdy), Docházka, Seznam dokladů a prodejů, výsledková listina jízdy, žebříčky den/měsíc/all-time; vše jako HTML→PDF šablony.</td>
+<td><select class="v" data-k="M14_107_v"><option value=""></option><option>✅ používáme — převzít</option><option>✏️ používáme — změnit</option><option>❌ nepoužíváme — vypustit</option><option>⭐ nové — chceme</option><option>❓ nevím / probrat</option></select></td>
+<td><select class="p" data-k="M14_107_p"><option value=""></option><option>MUST</option><option>SHOULD</option><option>COULD</option><option>WON'T</option></select></td>
+<td><span class="nw"><input class="n" data-k="M14_107_n" placeholder="poznámka / jak změnit (nebo 🎤 diktuj)"><button type="button" class="mic" title="Diktovat (čeština)">🎤</button></span></td></tr>
+<tr data-k="M14_108"><td class="fn">Podklady pro účetní — uzávěrky, reporty, účetní export (M10) na jednom místě.</td>
+<td><select class="v" data-k="M14_108_v"><option value=""></option><option>✅ používáme — převzít</option><option>✏️ používáme — změnit</option><option>❌ nepoužíváme — vypustit</option><option>⭐ nové — chceme</option><option>❓ nevím / probrat</option></select></td>
+<td><select class="p" data-k="M14_108_p"><option value=""></option><option>MUST</option><option>SHOULD</option><option>COULD</option><option>WON'T</option></select></td>
+<td><span class="nw"><input class="n" data-k="M14_108_n" placeholder="poznámka / jak změnit (nebo 🎤 diktuj)"><button type="button" class="mic" title="Diktovat (čeština)">🎤</button></span></td></tr>
+<tr data-k="M14_109"><td class="fn">Moto analytika — náklady na stroj (servis vs. výnosy), motohodiny, poruchovost — nad rámec Apexu.</td>
+<td><select class="v" data-k="M14_109_v"><option value=""></option><option>✅ používáme — převzít</option><option>✏️ používáme — změnit</option><option>❌ nepoužíváme — vypustit</option><option>⭐ nové — chceme</option><option>❓ nevím / probrat</option></select></td>
+<td><select class="p" data-k="M14_109_p"><option value=""></option><option>MUST</option><option>SHOULD</option><option>COULD</option><option>WON'T</option></select></td>
+<td><span class="nw"><input class="n" data-k="M14_109_n" placeholder="poznámka / jak změnit (nebo 🎤 diktuj)"><button type="button" class="mic" title="Diktovat (čeština)">🎤</button></span></td></tr>
+<tr data-k="M14_110"><td class="fn">HQ konsolidace (multi-site) — dashboardy přes všechny pobočky nad centrálním skladem: srovnání tržeb, vytížení a nákladů, konsolidované exporty; pobočkový uživatel vidí jen svůj tenant.</td>
+<td><select class="v" data-k="M14_110_v"><option value=""></option><option>✅ používáme — převzít</option><option>✏️ používáme — změnit</option><option>❌ nepoužíváme — vypustit</option><option>⭐ nové — chceme</option><option>❓ nevím / probrat</option></select></td>
+<td><select class="p" data-k="M14_110_p"><option value=""></option><option>MUST</option><option>SHOULD</option><option>COULD</option><option>WON'T</option></select></td>
+<td><span class="nw"><input class="n" data-k="M14_110_n" placeholder="poznámka / jak změnit (nebo 🎤 diktuj)"><button type="button" class="mic" title="Diktovat (čeština)">🎤</button></span></td></tr>
+<tr data-k="M14_111"><td class="fn">D09 (3 funkce) bez NF525; eventové žurnály = audit log M16.</td>
+<td><select class="v" data-k="M14_111_v"><option value=""></option><option>✅ používáme — převzít</option><option>✏️ používáme — změnit</option><option>❌ nepoužíváme — vypustit</option><option>⭐ nové — chceme</option><option>❓ nevím / probrat</option></select></td>
+<td><select class="p" data-k="M14_111_p"><option value=""></option><option>MUST</option><option>SHOULD</option><option>COULD</option><option>WON'T</option></select></td>
+<td><span class="nw"><input class="n" data-k="M14_111_n" placeholder="poznámka / jak změnit (nebo 🎤 diktuj)"><button type="button" class="mic" title="Diktovat (čeština)">🎤</button></span></td></tr>
+<tr class="mh"><td colspan="4"><b>M15 · Závody (GoRacing ekvivalent)</b> <span class="ph">F5</span></td></tr>
+<tr data-k="M15_112"><td class="fn">Formáty eventů — šablony: Grand Prix (kvalifikace + závod, skupiny A–D, 2 série), mini event, endurance (týmy, štafety, practice by driver / final by team, 12h/24h), firemní event s produktem a rezervací.</td>
+<td><select class="v" data-k="M15_112_v"><option value=""></option><option>✅ používáme — převzít</option><option>✏️ používáme — změnit</option><option>❌ nepoužíváme — vypustit</option><option>⭐ nové — chceme</option><option>❓ nevím / probrat</option></select></td>
+<td><select class="p" data-k="M15_112_p"><option value=""></option><option>MUST</option><option>SHOULD</option><option>COULD</option><option>WON'T</option></select></td>
+<td><span class="nw"><input class="n" data-k="M15_112_n" placeholder="poznámka / jak změnit (nebo 🎤 diktuj)"><button type="button" class="mic" title="Diktovat (čeština)">🎤</button></span></td></tr>
+<tr data-k="M15_113"><td class="fn">Kategorie &amp; přihlášky — kategorie jezdců, import startovních listin (CSV), registrace do rozjížděk, generování heats (manuální i automatické), slučování výsledků, řešení shody (ties) a škrtaných výsledků.</td>
+<td><select class="v" data-k="M15_113_v"><option value=""></option><option>✅ používáme — převzít</option><option>✏️ používáme — změnit</option><option>❌ nepoužíváme — vypustit</option><option>⭐ nové — chceme</option><option>❓ nevím / probrat</option></select></td>
+<td><select class="p" data-k="M15_113_p"><option value=""></option><option>MUST</option><option>SHOULD</option><option>COULD</option><option>WON'T</option></select></td>
+<td><span class="nw"><input class="n" data-k="M15_113_n" placeholder="poznámka / jak změnit (nebo 🎤 diktuj)"><button type="button" class="mic" title="Diktovat (čeština)">🎤</button></span></td></tr>
+<tr data-k="M15_114"><td class="fn">Šampionáty — bodovací tabulky, průběžné pořadí přes více eventů, veřejný web žebříčků.</td>
+<td><select class="v" data-k="M15_114_v"><option value=""></option><option>✅ používáme — převzít</option><option>✏️ používáme — změnit</option><option>❌ nepoužíváme — vypustit</option><option>⭐ nové — chceme</option><option>❓ nevím / probrat</option></select></td>
+<td><select class="p" data-k="M15_114_p"><option value=""></option><option>MUST</option><option>SHOULD</option><option>COULD</option><option>WON'T</option></select></td>
+<td><span class="nw"><input class="n" data-k="M15_114_n" placeholder="poznámka / jak změnit (nebo 🎤 diktuj)"><button type="button" class="mic" title="Diktovat (čeština)">🎤</button></span></td></tr>
+<tr data-k="M15_115"><td class="fn">Dokumenty — startovní/výsledkové listiny (PDF/HTML šablony), program eventu (booklet), dokumenty komisařů, SMS/e-mail předvolání.</td>
+<td><select class="v" data-k="M15_115_v"><option value=""></option><option>✅ používáme — převzít</option><option>✏️ používáme — změnit</option><option>❌ nepoužíváme — vypustit</option><option>⭐ nové — chceme</option><option>❓ nevím / probrat</option></select></td>
+<td><select class="p" data-k="M15_115_p"><option value=""></option><option>MUST</option><option>SHOULD</option><option>COULD</option><option>WON'T</option></select></td>
+<td><span class="nw"><input class="n" data-k="M15_115_n" placeholder="poznámka / jak změnit (nebo 🎤 diktuj)"><button type="button" class="mic" title="Diktovat (čeština)">🎤</button></span></td></tr>
+<tr data-k="M15_116"><td class="fn">Live pro závody — TV grafika (overlay), fotky jezdců, vlajky zemí, videofiniš (volitelné, IP kamera).</td>
+<td><select class="v" data-k="M15_116_v"><option value=""></option><option>✅ používáme — převzít</option><option>✏️ používáme — změnit</option><option>❌ nepoužíváme — vypustit</option><option>⭐ nové — chceme</option><option>❓ nevím / probrat</option></select></td>
+<td><select class="p" data-k="M15_116_p"><option value=""></option><option>MUST</option><option>SHOULD</option><option>COULD</option><option>WON'T</option></select></td>
+<td><span class="nw"><input class="n" data-k="M15_116_n" placeholder="poznámka / jak změnit (nebo 🎤 diktuj)"><button type="button" class="mic" title="Diktovat (čeština)">🎤</button></span></td></tr>
+<tr data-k="M15_117"><td class="fn">R GoRacing (28 funkcí) + D02 Events (14 funkcí); SWS integrace jen pokud relevantní pro moto (Q7).</td>
+<td><select class="v" data-k="M15_117_v"><option value=""></option><option>✅ používáme — převzít</option><option>✏️ používáme — změnit</option><option>❌ nepoužíváme — vypustit</option><option>⭐ nové — chceme</option><option>❓ nevím / probrat</option></select></td>
+<td><select class="p" data-k="M15_117_p"><option value=""></option><option>MUST</option><option>SHOULD</option><option>COULD</option><option>WON'T</option></select></td>
+<td><span class="nw"><input class="n" data-k="M15_117_n" placeholder="poznámka / jak změnit (nebo 🎤 diktuj)"><button type="button" class="mic" title="Diktovat (čeština)">🎤</button></span></td></tr>
+<tr class="mh"><td colspan="4"><b>M16 · Uživatelé, práva &amp; audit (platforma)</b> <span class="ph">F1</span></td></tr>
+<tr data-k="M16_118"><td class="fn">Účty &amp; přihlášení — operátoři s barvou/avatarem, rychlé přepínání na sdílených stanicích (PIN / dlaždice), auto-odhlášení po neaktivitě, vynucená změna hesla.</td>
+<td><select class="v" data-k="M16_118_v"><option value=""></option><option>✅ používáme — převzít</option><option>✏️ používáme — změnit</option><option>❌ nepoužíváme — vypustit</option><option>⭐ nové — chceme</option><option>❓ nevím / probrat</option></select></td>
+<td><select class="p" data-k="M16_118_p"><option value=""></option><option>MUST</option><option>SHOULD</option><option>COULD</option><option>WON'T</option></select></td>
+<td><span class="nw"><input class="n" data-k="M16_118_n" placeholder="poznámka / jak změnit (nebo 🎤 diktuj)"><button type="button" class="mic" title="Diktovat (čeština)">🎤</button></span></td></tr>
+<tr data-k="M16_119"><td class="fn">Role &amp; oprávnění — skupiny (Admin, Manager, Recepce, Maršál, Bar, Účetní…) odvoditelné ze šablon; granulární práva po oblastech (nastavení / pokladna-storna-slevy / kalendář / vouchery / servis); změny práv jen Admin + re-login.</td>
+<td><select class="v" data-k="M16_119_v"><option value=""></option><option>✅ používáme — převzít</option><option>✏️ používáme — změnit</option><option>❌ nepoužíváme — vypustit</option><option>⭐ nové — chceme</option><option>❓ nevím / probrat</option></select></td>
+<td><select class="p" data-k="M16_119_p"><option value=""></option><option>MUST</option><option>SHOULD</option><option>COULD</option><option>WON'T</option></select></td>
+<td><span class="nw"><input class="n" data-k="M16_119_n" placeholder="poznámka / jak změnit (nebo 🎤 diktuj)"><button type="button" class="mic" title="Diktovat (čeština)">🎤</button></span></td></tr>
+<tr data-k="M16_120"><td class="fn">Audit log — každá citlivá operace (storno, sleva, otevření zásuvky, změna práv, refundace, reset session) s kým/kdy/co/proč; neměnný. ✅ Vzor z Apexu (Záznam událostí, 178 stran): čas + stanice + operátor + typ; loguje i přihlášení, ruční úpravy kreditů, mazání položek dokladů a zamítnuté pokusy („Přístup odepřen – …&quot;) — PitOS převezme včetně permission-denied událostí (event sourcing to dává zdarma).</td>
+<td><select class="v" data-k="M16_120_v"><option value=""></option><option>✅ používáme — převzít</option><option>✏️ používáme — změnit</option><option>❌ nepoužíváme — vypustit</option><option>⭐ nové — chceme</option><option>❓ nevím / probrat</option></select></td>
+<td><select class="p" data-k="M16_120_p"><option value=""></option><option>MUST</option><option>SHOULD</option><option>COULD</option><option>WON'T</option></select></td>
+<td><span class="nw"><input class="n" data-k="M16_120_n" placeholder="poznámka / jak změnit (nebo 🎤 diktuj)"><button type="button" class="mic" title="Diktovat (čeština)">🎤</button></span></td></tr>
+<tr data-k="M16_121"><td class="fn">Nastavení systému — centrální konfigurace (tratě, stanice, tiskárny, zařízení, číselníky), export/import konfigurace, prostředí live/school.</td>
+<td><select class="v" data-k="M16_121_v"><option value=""></option><option>✅ používáme — převzít</option><option>✏️ používáme — změnit</option><option>❌ nepoužíváme — vypustit</option><option>⭐ nové — chceme</option><option>❓ nevím / probrat</option></select></td>
+<td><select class="p" data-k="M16_121_p"><option value=""></option><option>MUST</option><option>SHOULD</option><option>COULD</option><option>WON'T</option></select></td>
+<td><span class="nw"><input class="n" data-k="M16_121_n" placeholder="poznámka / jak změnit (nebo 🎤 diktuj)"><button type="button" class="mic" title="Diktovat (čeština)">🎤</button></span></td></tr>
+<tr data-k="M16_122"><td class="fn">D01 kompletní (3 funkce, ale rozsáhlý seznam práv) + D02/D07 právní vazby.</td>
+<td><select class="v" data-k="M16_122_v"><option value=""></option><option>✅ používáme — převzít</option><option>✏️ používáme — změnit</option><option>❌ nepoužíváme — vypustit</option><option>⭐ nové — chceme</option><option>❓ nevím / probrat</option></select></td>
+<td><select class="p" data-k="M16_122_p"><option value=""></option><option>MUST</option><option>SHOULD</option><option>COULD</option><option>WON'T</option></select></td>
+<td><span class="nw"><input class="n" data-k="M16_122_n" placeholder="poznámka / jak změnit (nebo 🎤 diktuj)"><button type="button" class="mic" title="Diktovat (čeština)">🎤</button></span></td></tr>
+<tr class="mh"><td colspan="4"><b>M17 · Migrace dat z Apexu</b> <span class="ph">F2</span></td></tr>
+<tr data-k="M17_123"><td class="fn">Průzkum zdroje (F0.5, Q21) — zjistit DB engine GoKarts na serveru (lokální SQL? soubory?), schéma, konzistenci; zdokumentovat. Fallback: oficiální exporty (členové 3 formáty, XLSX gridy) + tiskové sestavy.</td>
+<td><select class="v" data-k="M17_123_v"><option value=""></option><option>✅ používáme — převzít</option><option>✏️ používáme — změnit</option><option>❌ nepoužíváme — vypustit</option><option>⭐ nové — chceme</option><option>❓ nevím / probrat</option></select></td>
+<td><select class="p" data-k="M17_123_p"><option value=""></option><option>MUST</option><option>SHOULD</option><option>COULD</option><option>WON'T</option></select></td>
+<td><span class="nw"><input class="n" data-k="M17_123_n" placeholder="poznámka / jak změnit (nebo 🎤 diktuj)"><button type="button" class="mic" title="Diktovat (čeština)">🎤</button></span></td></tr>
+<tr data-k="M17_124"><td class="fn">ETL pipeline — extrakce → transformace do PitOS modelu → validace: kontrolní součty (Σ kreditních pohybů = zůstatek member×member, počty dokladů, počty kol per člen), report rozdílů; opakovatelné běhy (idempotence).</td>
+<td><select class="v" data-k="M17_124_v"><option value=""></option><option>✅ používáme — převzít</option><option>✏️ používáme — změnit</option><option>❌ nepoužíváme — vypustit</option><option>⭐ nové — chceme</option><option>❓ nevím / probrat</option></select></td>
+<td><select class="p" data-k="M17_124_p"><option value=""></option><option>MUST</option><option>SHOULD</option><option>COULD</option><option>WON'T</option></select></td>
+<td><span class="nw"><input class="n" data-k="M17_124_n" placeholder="poznámka / jak změnit (nebo 🎤 diktuj)"><button type="button" class="mic" title="Diktovat (čeština)">🎤</button></span></td></tr>
+<tr data-k="M17_125"><td class="fn">Deduplikace &amp; sloučení identit — členové Apex × kontakty webu pitland.cz (Q13): párování e-mail/telefon, ruční fronta sporných; GDPR — migrovat jen potřebné, retenční politika.</td>
+<td><select class="v" data-k="M17_125_v"><option value=""></option><option>✅ používáme — převzít</option><option>✏️ používáme — změnit</option><option>❌ nepoužíváme — vypustit</option><option>⭐ nové — chceme</option><option>❓ nevím / probrat</option></select></td>
+<td><select class="p" data-k="M17_125_p"><option value=""></option><option>MUST</option><option>SHOULD</option><option>COULD</option><option>WON'T</option></select></td>
+<td><span class="nw"><input class="n" data-k="M17_125_n" placeholder="poznámka / jak změnit (nebo 🎤 diktuj)"><button type="button" class="mic" title="Diktovat (čeština)">🎤</button></span></td></tr>
+<tr data-k="M17_126"><td class="fn">Zvláštnosti dle průzkumu — záporné kreditní zůstatky (Q14), ruční úpravy kreditů bez důvodu (Q17), sdílené karty; rozhodnout konverzní pravidla PŘED migrací s účetní/daňařem.</td>
+<td><select class="v" data-k="M17_126_v"><option value=""></option><option>✅ používáme — převzít</option><option>✏️ používáme — změnit</option><option>❌ nepoužíváme — vypustit</option><option>⭐ nové — chceme</option><option>❓ nevím / probrat</option></select></td>
+<td><select class="p" data-k="M17_126_p"><option value=""></option><option>MUST</option><option>SHOULD</option><option>COULD</option><option>WON'T</option></select></td>
+<td><span class="nw"><input class="n" data-k="M17_126_n" placeholder="poznámka / jak změnit (nebo 🎤 diktuj)"><button type="button" class="mic" title="Diktovat (čeština)">🎤</button></span></td></tr>
+<tr data-k="M17_127"><td class="fn">Fázovaný cutover — F2: členové + karty + kredity + produkty; F3: doklady + historie jízd/kol; suchý běh (dry-run) na school kopii, den D s freeze oknem, rollback plán.</td>
+<td><select class="v" data-k="M17_127_v"><option value=""></option><option>✅ používáme — převzít</option><option>✏️ používáme — změnit</option><option>❌ nepoužíváme — vypustit</option><option>⭐ nové — chceme</option><option>❓ nevím / probrat</option></select></td>
+<td><select class="p" data-k="M17_127_p"><option value=""></option><option>MUST</option><option>SHOULD</option><option>COULD</option><option>WON'T</option></select></td>
+<td><span class="nw"><input class="n" data-k="M17_127_n" placeholder="poznámka / jak změnit (nebo 🎤 diktuj)"><button type="button" class="mic" title="Diktovat (čeština)">🎤</button></span></td></tr>
+<tr data-k="M17_128"><td class="fn">R4 (bez oficiálního full-exportu); mitigace = F0.5 průzkum DB + validace kontrolními součty proti obrazovkám Apexu.</td>
+<td><select class="v" data-k="M17_128_v"><option value=""></option><option>✅ používáme — převzít</option><option>✏️ používáme — změnit</option><option>❌ nepoužíváme — vypustit</option><option>⭐ nové — chceme</option><option>❓ nevím / probrat</option></select></td>
+<td><select class="p" data-k="M17_128_p"><option value=""></option><option>MUST</option><option>SHOULD</option><option>COULD</option><option>WON'T</option></select></td>
+<td><span class="nw"><input class="n" data-k="M17_128_n" placeholder="poznámka / jak změnit (nebo 🎤 diktuj)"><button type="button" class="mic" title="Diktovat (čeština)">🎤</button></span></td></tr></table>
+</main>
+<footer>PitOS workshop checklist · generováno z projektové přípravy v0.7 · 13. 7. 2026 · autosave: localStorage prohlížeče + tlačítko Export</footer>
+<script>
+const KEY='pitos_workshop_v1';
+let data={};
+try{data=JSON.parse(localStorage.getItem(KEY)||'{}')}catch(e){}
+document.querySelectorAll('[data-k]').forEach(el=>{const k=el.dataset.k;if(el.tagName==='TR')return;if(data[k]!=null)el.value=data[k];
+ el.addEventListener('input',()=>{data[k]=el.value;localStorage.setItem(KEY,JSON.stringify(data));mark(el);prog();});mark(el);});
+function mark(el){const tr=el.closest('tr');if(!tr)return;const v=tr.querySelector('.v');tr.classList.toggle('done',v&&v.value!=='');}
+function prog(){const trs=[...document.querySelectorAll('tr[data-k]')];const d=trs.filter(t=>t.classList.contains('done')).length;
+ document.getElementById('prog').textContent=d+' / '+trs.length+' vyplněno';}
+function saveNow(){localStorage.setItem(KEY,JSON.stringify(data));alert('Uloženo v prohlížeči.')}
+function exportJSON(){const out={exportedAt:new Date().toISOString(),answers:{}};
+ document.querySelectorAll('tr[data-k]').forEach(tr=>{const k=tr.dataset.k;const g=c=>{const e=tr.querySelector(c);return e?e.value:''};
+  const fn=tr.querySelector('.fn').textContent;const v=g('.v'),p=g('.p'),n=g('.n');
+  if(v||p||n)out.answers[k]={funkce:fn,verdikt:v,priorita:p,poznamka:n};});
+ const blob=new Blob([JSON.stringify(out,null,2)],{type:'application/json'});
+ const a=document.createElement('a');a.href=URL.createObjectURL(blob);a.download='pitos_workshop_vysledek.json';a.click();}
+document.querySelectorAll('tr[data-k]').forEach(tr=>{const v=tr.querySelector('.v');if(v&&v.value)tr.classList.add('done')});prog();
+
+// ===== Diktování (Web Speech API, cs-CZ) =====
+(function(){
+ const SR = window.SpeechRecognition || window.webkitSpeechRecognition;
+ const mics = document.querySelectorAll('.mic');
+ if(!SR){ mics.forEach(b=>{b.disabled=true;b.title='Diktování vyžaduje Chrome/Edge/Safari';b.style.opacity=.35}); return; }
+ let rec=null, activeBtn=null, baseText='';
+ function stop(){ if(rec){try{rec.stop()}catch(e){}} }
+ mics.forEach(btn=>{
+  btn.addEventListener('click',()=>{
+   if(activeBtn===btn){ stop(); return; }        // klik na běžící mikrofon = stop
+   stop();                                        // vypni případný jiný
+   const input = btn.closest('.nw').querySelector('input');
+   rec = new SR(); rec.lang='cs-CZ'; rec.continuous=true; rec.interimResults=true;
+   activeBtn=btn; btn.classList.add('rec'); btn.textContent='⏹';
+   baseText = input.value ? input.value.replace(/\s+$/,'')+' ' : '';
+   rec.onresult = e=>{
+    let fin='', inter='';
+    for(let i=0;i<e.results.length;i++){ const r=e.results[i]; if(r.isFinal) fin+=r[0].transcript; else inter+=r[0].transcript; }
+    input.value = (baseText + fin + inter).replace(/\s+/g,' ').trimStart();
+    input.dispatchEvent(new Event('input'));     // autosave
+   };
+   rec.onend = ()=>{ btn.classList.remove('rec'); btn.textContent='🎤'; activeBtn=null; rec=null; };
+   rec.onerror = rec.onend;
+   try{ rec.start(); }catch(e){ rec.onend(); }
+  });
+ });
+})();
+</script></body></html>
